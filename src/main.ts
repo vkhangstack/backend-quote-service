@@ -98,7 +98,7 @@ export async function bootstrap(): Promise<NestExpressApplication> {
   await app.listen(port);
 
   Logger.log(`server running on ${await app.getUrl()}`);
-  Logger.log(`App run generate root key "${key}"`);
+  console.info(`App run generate root key "${key}"`);
 
   return app;
 }
