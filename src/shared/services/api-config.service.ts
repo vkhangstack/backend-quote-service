@@ -5,10 +5,14 @@ import { isNil } from 'lodash';
 
 import { UserSubscriber } from '../../entity-subscribers/user-subscriber';
 import { SnakeNamingStrategy } from '../../snake-naming.strategy';
+import { GeneratorService } from './generator.service';
 
 @Injectable()
 export class ApiConfigService {
-  constructor(private configService: ConfigService) {}
+  constructor(
+    private configService: ConfigService,
+    private generateService: GeneratorService,
+  ) {}
 
   get isDevelopment(): boolean {
     return this.nodeEnv === 'development';
@@ -46,6 +50,10 @@ export class ApiConfigService {
     const value = this.get(key);
 
     return value.replace(/\\n/g, '\n');
+  }
+
+  private setKey(key: string): string {
+    return (process.env.ROOT_KEY = key);
   }
 
   get nodeEnv(): string {
@@ -142,6 +150,7 @@ export class ApiConfigService {
   get appConfig() {
     return {
       port: this.getString('PORT'),
+      appKey: this.setKey(this.generateService.uuid()),
     };
   }
 

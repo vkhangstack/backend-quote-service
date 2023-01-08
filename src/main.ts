@@ -1,6 +1,7 @@
 import {
   ClassSerializerInterceptor,
   HttpStatus,
+  Logger,
   UnprocessableEntityException,
   ValidationPipe,
 } from '@nestjs/common';
@@ -93,9 +94,11 @@ export async function bootstrap(): Promise<NestExpressApplication> {
   }
 
   const port = configService.appConfig.port;
+  const key = configService.appConfig.appKey;
   await app.listen(port);
 
-  console.info(`server running on ${await app.getUrl()}`);
+  Logger.log(`server running on ${await app.getUrl()}`);
+  Logger.log(`App run generate root key "${key}"`);
 
   return app;
 }
