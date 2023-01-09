@@ -1,17 +1,13 @@
-# Awesome NestJS Boilerplate v8
-
-[![Awesome NestJS](https://img.shields.io/badge/Awesome-NestJS-blue.svg?longCache=true&style=flat-square)](https://github.com/juliandavidmr/awesome-nestjs)
-
-> This is an ever-evolving, very opinionated architecture and dev environment for new node projects using [NestJS](https://nestjs.com). Questions, feedback, and for now, even bikeshedding are welcome. 😄
+# Quotes Service Product
 
 ## Getting started
 
 ```bash
-# 1. Clone the repository or click on "Use this template" button.
-npx degit NarHakobyan/awesome-nest-boilerplate my-nest-app
+# 1. Clone the repository with ssh
+git clone git@github.com:vkhangstack/backend-quote-service.git
 
 # 2. Enter your newly-cloned folder.
-cd my-nest-app
+cd backend-quote-service
 
 # 3. Create Environment variables file.
 cp .env.example .env
@@ -20,19 +16,8 @@ cp .env.example .env
 yarn
 ```
 
-## Checklist
-
-When you use this template, try follow the checklist to update your info properly
-
-- [ ] Change the author name in `LICENSE`
-- [ ] Change configurations in `.env`
-- [ ] Remove the `.github` folder which contains the funding info
-- [ ] Clean up the README.md file
-
-And, enjoy :)
-
-
 ### Development
+
 ```bash
 # 4. Run development server and open http://localhost:3000
 yarn start:dev
@@ -77,17 +62,3 @@ And you will see the generated file in `dist` that ready to be served.
   <dt><b>Linter</b></dt>  
   <dd>eslint + prettier = ❤️</dd>
 </dl>
-
-## Documentation
-
-This project includes a `docs` folder with more details on:
-
-1.  [Setup and development](https://narhakobyan.github.io/awesome-nest-boilerplate/docs/development.html#first-time-setup)
-1.  [Architecture](https://narhakobyan.github.io/awesome-nest-boilerplate/docs/architecture.html)
-1.  [Naming Cheatsheet](https://narhakobyan.github.io/awesome-nest-boilerplate/docs/naming-cheatsheet.html)
-
-## Community
-
-For help, discussion about best practices, or any other conversation that would benefit from being searchable:
-
-[Discuss Awesome NestJS Boilerplate on GitHub](https://github.com/NarHakobyan/awesome-nest-boilerplate/discussions)

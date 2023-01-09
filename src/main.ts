@@ -93,6 +93,7 @@ export async function bootstrap(): Promise<NestExpressApplication> {
     app.enableShutdownHooks();
   }
 
+  configService.setAppKey();
   const port = configService.appConfig.port;
   const key = configService.appConfig.appKey;
   await app.listen(port);
