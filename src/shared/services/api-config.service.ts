@@ -52,8 +52,8 @@ export class ApiConfigService {
     return value.replace(/\\n/g, '\n');
   }
 
-  private setKey(key: string): string {
-    return (process.env.ROOT_KEY = key);
+  public setAppKey(): string {
+    return (process.env.ROOT_KEY = this.generateService.uuid());
   }
 
   get nodeEnv(): string {
@@ -150,7 +150,7 @@ export class ApiConfigService {
   get appConfig() {
     return {
       port: this.getString('PORT'),
-      appKey: this.setKey(this.generateService.uuid()),
+      appKey: this.getString('ROOT_KEY'),
     };
   }
 

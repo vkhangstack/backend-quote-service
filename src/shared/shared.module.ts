@@ -1,13 +1,13 @@
-import { HttpModule } from "@nestjs/axios";
-import { Global, Module } from "@nestjs/common";
-import { CqrsModule } from "@nestjs/cqrs";
+import { HttpModule } from '@nestjs/axios';
+import { Global, Module } from '@nestjs/common';
+import { CqrsModule } from '@nestjs/cqrs';
 
 // import { ClientProxyFactory, Transport } from '@nestjs/microservices';
-import { ApiConfigService } from "./services/api-config.service";
+import { ApiConfigService } from './services/api-config.service';
 // import { AwsS3Service } from './services/aws-s3.service';
-import { GeneratorService } from "./services/generator.service";
-import { TranslationService } from "./services/translation.service";
-import { ValidatorService } from "./services/validator.service";
+import { GeneratorService } from './services/generator.service';
+import { TranslationService } from './services/translation.service';
+import { ValidatorService } from './services/validator.service';
 
 const providers = [
   ApiConfigService,

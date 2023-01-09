@@ -1,11 +1,11 @@
-import type { MigrationInterface, QueryRunner } from "typeorm";
+import type { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class CreateUsersTable1622299665807 implements MigrationInterface {
-  name = "createUsersTable1622299665807";
+  name = 'createUsersTable1622299665807';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      "CREATE TYPE \"users_role_enum\" AS ENUM('ROOT','USER', 'ADMIN')"
+      "CREATE TYPE \"users_role_enum\" AS ENUM('ROOT','USER', 'ADMIN')",
     );
     await queryRunner.query(`
       CREATE TABLE "users"
@@ -15,6 +15,7 @@ export class CreateUsersTable1622299665807 implements MigrationInterface {
         "updated_at" TIMESTAMP         NOT NULL DEFAULT now(),
         "first_name" character varying,
         "last_name"  character varying,
+        "username"  character varying,
         "role"       "users_role_enum" NOT NULL DEFAULT 'USER',
         "email"      character varying,
         "password"   character varying,
