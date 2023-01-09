@@ -25,11 +25,16 @@ export class AuthService {
   }): Promise<TokenPayloadDto> {
     return new TokenPayloadDto({
       expiresIn: this.configService.authConfig.jwtExpirationTime,
-      accessToken: await this.jwtService.signAsync({
-        userId: data.userId,
-        type: TokenType.ACCESS_TOKEN,
-        role: data.role,
-      }),
+      accessToken: await this.jwtService.signAsync(
+        {
+          userId: data.userId,
+          type: TokenType.ACCESS_TOKEN,
+          role: data.role,
+        },
+        {
+          privateKey: this.configService.authConfig.privateKey,
+        },
+      ),
     });
   }
 
