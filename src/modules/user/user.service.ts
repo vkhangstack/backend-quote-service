@@ -1,16 +1,18 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { plainToClass } from 'class-transformer';
 import type { FindConditions } from 'typeorm';
 import { Transactional } from 'typeorm-transactional-cls-hooked';
-import { Logger } from 'winston';
 
 import type { PageDto } from '../../common/dto/page.dto';
+import { RoleType } from '../../constants/role-type';
 import { FileNotImageException, UserNotFoundException } from '../../exceptions';
 import { IFile } from '../../interfaces';
+import { ApiConfigService } from '../../shared/services/api-config.service';
 // import { AwsS3Service } from '../../shared/services/aws-s3.service';
 import { ValidatorService } from '../../shared/services/validator.service';
 import type { Optional } from '../../types';
+import { CreateRootDto } from '../auth/dto/CreateRootDto';
 import { UserRegisterDto } from '../auth/dto/UserRegisterDto';
 import { CreateSettingsCommand } from './commands/create-settings.command';
 import { CreateSettingsDto } from './dtos/create-settings.dto';
@@ -26,9 +28,8 @@ export class UserService {
     private userRepository: UserRepository,
     private validatorService: ValidatorService,
     // private awsS3Service: AwsS3Service,
+    private apiConfigService: ApiConfigService,
     private commandBus: CommandBus,
-    @Inject('winston')
-    private readonly logger: Logger,
   ) {}
 
   /**
@@ -65,7 +66,6 @@ export class UserService {
     userRegisterDto: UserRegisterDto,
     file: IFile,
   ): Promise<UserEntity> {
-    this.logger.info('Create User');
     const user = this.userRepository.create(userRegisterDto);
 
     if (file && !this.validatorService.isImage(file.mimetype)) {
@@ -85,6 +85,34 @@ export class UserService {
         isPhoneVerified: false,
       }),
     );
+
+    return user;
+  }
+
+  @Transactional()
+  async createRoot(createRootDto: CreateRootDto): Promise<UserEntity> {
+    const root = await this.findByUsernameOrEmail({
+      username: createRootDto.username,
+    });
+
+    if (root) {
+      throw new Error('Root already exist! ');
+    }
+
+    if (createRootDto.key !== this.apiConfigService.appConfig.appKey) {
+      throw new Error('Key wrong!');
+    }
+
+    const user = this.userRepository.create({
+      firstName: 'Supper',
+      lastName: 'System',
+      role: RoleType.ROOT,
+      password: createRootDto.password,
+      username: createRootDto.username,
+      phone: createRootDto.phone,
+    });
+
+    await this.userRepository.save(user);
 
     return user;
   }
