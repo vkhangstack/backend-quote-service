@@ -15,11 +15,11 @@ import { PublicStrategy } from './public.strategy';
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       useFactory: (configService: ApiConfigService) => ({
-        secretOrPrivateKey: configService.authConfig.publicKey,
+        privateKey: configService.authConfig.privateKey,
         // if you want to use token with expiration date
-        // signOptions: {
-        //     expiresIn: configService.getNumber('JWT_EXPIRATION_TIME'),
-        // },
+        signOptions: {
+          expiresIn: configService.authConfig.jwtExpirationTime,
+        },
       }),
       inject: [ApiConfigService],
     }),
