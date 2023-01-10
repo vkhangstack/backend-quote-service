@@ -16,6 +16,12 @@ cp .env.example .env
 yarn
 ```
 
+## Teachnical
+
+Node: v16+
+Database: Postgresql (CSDL), Mongodb (Logs)
+Yarn: v1.22.9+
+
 ### Development
 
 ```bash
