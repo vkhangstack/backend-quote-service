@@ -48,6 +48,7 @@ export class AuthController {
   ): Promise<ResponseDto<UserDto> | ResponseDto<string[]>> {
     try {
       this.loggerService.info('Create root execute');
+      this.loggerService.debug('createRoot receive body', createRoot);
       const createdUser = await this.userService.createRoot(createRoot);
 
       return {
@@ -58,7 +59,7 @@ export class AuthController {
         message: 'Create root success!',
       };
     } catch (error) {
-      this.loggerService.error('error', error);
+      this.loggerService.error('createRoot error', error);
 
       return {
         code: HttpStatus.INTERNAL_SERVER_ERROR,
@@ -80,6 +81,7 @@ export class AuthController {
   ): Promise<ResponseDto<LoginPayloadDto> | ResponseDto<string[]>> {
     try {
       this.loggerService.info('User login execute');
+      this.loggerService.debug('User login receive body', userLoginDto);
       const userEntity = await this.authService.validateUser(userLoginDto);
 
       const token = await this.authService.createAccessToken({

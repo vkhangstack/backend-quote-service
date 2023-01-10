@@ -154,6 +154,12 @@ export class ApiConfigService {
     };
   }
 
+  get mongoConfig() {
+    return {
+      uri: this.getString('MONGO_URI'),
+    };
+  }
+
   private get(key: string): string {
     const value = this.configService.get<string>(key);
 

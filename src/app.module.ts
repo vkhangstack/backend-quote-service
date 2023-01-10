@@ -1,4 +1,5 @@
 import './boilerplate.polyfill';
+import 'winston-mongodb';
 
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
@@ -43,21 +44,51 @@ import { SharedModule } from './shared/shared.module';
       inject: [ApiConfigService],
     }),
     HealthCheckerModule,
-    WinstonModule.forRoot({
-      format: format.combine(format.timestamp(), format.json()),
-      transports: [
-        new transports.Console(),
-        new transports.File({
-          dirname: path.join(__dirname, './../logs/debug/'), //path to where save loggin result
-          filename: 'debug.log', //name of file where will be saved logging result
-          level: 'debug',
-        }),
-        new transports.File({
-          dirname: path.join(__dirname, './../logs/info/'),
-          filename: 'info.log',
-          level: 'info',
-        }),
-      ],
+    WinstonModule.forRootAsync({
+      useFactory: (configService: ApiConfigService) => ({
+        format: format.combine(format.timestamp(), format.json()),
+        transports: [
+          new transports.File({
+            dirname: path.join(__dirname, './../logs/debug/'),
+            filename: 'debug.log',
+            level: 'debug',
+            maxFiles: 90,
+          }),
+          new transports.File({
+            dirname: path.join(__dirname, './../logs/error/'),
+            filename: 'error.log',
+            level: 'error',
+            maxFiles: 30,
+          }),
+          new transports.File({
+            dirname: path.join(__dirname, './../logs/info/'),
+            filename: 'info.log',
+            level: 'info',
+            maxFiles: 30,
+          }),
+          new transports.MongoDB({
+            level: 'debug',
+            db: configService.mongoConfig.uri,
+            collection: 'debug',
+            options: {
+              useUnifiedTopology: true,
+            },
+            capped: true,
+            expireAfterSeconds: 7_889_400,
+          }),
+        ],
+        exceptionHandlers: [
+          new transports.Console({
+            format: format.colorize(),
+          }),
+          new transports.File({
+            dirname: path.join(__dirname, './../logs/exceptions/'),
+            filename: 'exceptions.log',
+          }),
+        ],
+        exitOnError: false,
+      }),
+      inject: [ApiConfigService],
     }),
   ],
 })
