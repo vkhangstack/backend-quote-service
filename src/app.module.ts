@@ -46,8 +46,19 @@ import { SharedModule } from './shared/shared.module';
     HealthCheckerModule,
     WinstonModule.forRootAsync({
       useFactory: (configService: ApiConfigService) => ({
-        format: format.combine(format.timestamp(), format.json()),
+        format: format.combine(
+          format.timestamp(),
+          format.json(),
+          format.metadata(),
+        ),
         transports: [
+          new transports.Console({
+            level: 'debug',
+            format: format.combine(
+              format.json({ space: 2 }),
+              format.metadata(),
+            ),
+          }),
           new transports.File({
             dirname: path.join(__dirname, './../logs/debug/'),
             filename: 'debug.log',
@@ -69,17 +80,26 @@ import { SharedModule } from './shared/shared.module';
           new transports.MongoDB({
             level: 'debug',
             db: configService.mongoConfig.uri,
-            collection: 'debug',
+            collection: 'logs-system',
             options: {
               useUnifiedTopology: true,
+              poolSize: 5,
+              autoReconnect: true,
             },
             capped: true,
+            cappedSize: 500_000,
+            storeHost: true,
+            dbName: 'quotes-logs',
             expireAfterSeconds: 7_889_400,
           }),
         ],
         exceptionHandlers: [
           new transports.Console({
-            format: format.colorize(),
+            format: format.combine(
+              format.timestamp(),
+              format.json(),
+              format.metadata(),
+            ),
           }),
           new transports.File({
             dirname: path.join(__dirname, './../logs/exceptions/'),
