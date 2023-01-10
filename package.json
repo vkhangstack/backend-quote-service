@@ -75,7 +75,8 @@
     "typeorm": "^0.2.41",
     "typeorm-transactional-cls-hooked": "^0.1.21",
     "uuid": "^8.3.2",
-    "winston": "^3.8.2"
+    "winston": "^3.8.2",
+    "winston-mongodb": "^5.1.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.2.0",
