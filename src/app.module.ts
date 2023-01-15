@@ -11,6 +11,7 @@ import { format, transports } from 'winston';
 
 import { AuthModule } from './modules/auth/auth.module';
 import { HealthCheckerModule } from './modules/health-checker/health-checker.module';
+import { LicenseModule } from './modules/license/license.module';
 import { PostModule } from './modules/post/post.module';
 import { QuotesModule } from './modules/quotes/quotes.module';
 import { UserModule } from './modules/user/user.module';
@@ -112,6 +113,7 @@ import { SharedModule } from './shared/shared.module';
       inject: [ApiConfigService],
     }),
     QuotesModule,
+    LicenseModule,
   ],
 })
 export class AppModule {}
