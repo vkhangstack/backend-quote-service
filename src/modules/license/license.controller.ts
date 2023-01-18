@@ -69,6 +69,14 @@ export class LicenseController {
       this.loggerService.debug('LicenseController execute func activeLicenseToken get user', user);
       const data = await this.licenseService.updateLicense(updateLicense, user);
 
+      if (data === HttpStatus.CONFLICT) {
+        return {
+          code: HttpStatus.CONFLICT,
+          data: [],
+          message: 'License is active',
+        };
+      }
+
       return {
         code: HttpStatus.OK,
         data,

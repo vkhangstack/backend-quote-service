@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Transactional } from 'typeorm-transactional-cls-hooked';
 
@@ -39,11 +39,11 @@ export class LicenseService {
   }
 
   @Transactional()
-  async updateLicense(updateLicenseDto: UpdateLicenseDto, user: UserEntity) {
+  async updateLicense(updateLicenseDto: UpdateLicenseDto, user: UserEntity): Promise<Record<K, V>> {
     const record = await this.licenseRepository.findOne({ id: updateLicenseDto.licenseId });
 
     if (Number(record?.status) === STATUS.ACTIVE) {
-      throw new Error('Status license is active');
+      return HttpStatus.CONFLICT;
     }
 
     const licenseToken = await this.jwtService.signAsync(
