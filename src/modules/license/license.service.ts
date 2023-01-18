@@ -7,6 +7,7 @@ import { ApiConfigService } from '../../shared/services/api-config.service';
 import { GeneratorService } from '../../shared/services/generator.service';
 import { IUserEntity, UserEntity } from '../user/user.entity';
 import { CreateLicenseDto } from './dto/create-license.dto';
+import type { SearchLicenseDto } from './dto/search-license.dto';
 import { UpdateLicenseDto } from './dto/update-license.dto';
 import { LicenseEntity } from './entities/license.entity';
 import { STATUS } from './license.enum';
@@ -66,14 +67,28 @@ export class LicenseService {
       })
       .where('id = :id', { id: updateLicenseDto.licenseId })
       .execute();
+
+    return {
+      license: {
+        licenseToken,
+        licenseKey: record?.licenseKey,
+        expireIn: record?.expires,
+        createdAt: record?.createdAt,
+        dayExpire: record?.dayExpire,
+      },
+    };
   }
 
-  findAll() {
-    return 'This action returns all license';
+  async findAll(searchLicenseDto: SearchLicenseDto): Promise<LicenseEntity[]> {
+    if (!searchLicenseDto.status) {
+      return this.licenseRepository.find();
+    }
+
+    return this.licenseRepository.find({ status: searchLicenseDto.status });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} license`;
+  findOne(id: Uuid) {
+    return this.licenseRepository.findOne({ id });
   }
 
   update(id: number, updateLicenseDto: UpdateLicenseDto) {

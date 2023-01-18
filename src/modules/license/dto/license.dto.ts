@@ -23,4 +23,7 @@ export class LicenseDto extends AbstractDto {
   @IsNotEmpty()
   @IsString()
   typeLicense?: number;
+
+  @ApiPropertyOptional()
+  status?: number;
 }
