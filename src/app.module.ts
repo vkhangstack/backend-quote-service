@@ -29,8 +29,7 @@ import { SharedModule } from './shared/shared.module';
     }),
     TypeOrmModule.forRootAsync({
       imports: [SharedModule],
-      useFactory: (configService: ApiConfigService) =>
-        configService.postgresConfig,
+      useFactory: (configService: ApiConfigService) => configService.postgresConfig,
       inject: [ApiConfigService],
     }),
     I18nModule.forRootAsync({
@@ -48,18 +47,11 @@ import { SharedModule } from './shared/shared.module';
     HealthCheckerModule,
     WinstonModule.forRootAsync({
       useFactory: (configService: ApiConfigService) => ({
-        format: format.combine(
-          format.timestamp(),
-          format.json(),
-          format.metadata(),
-        ),
+        format: format.combine(format.timestamp(), format.json(), format.metadata()),
         transports: [
           new transports.Console({
             level: 'debug',
-            format: format.combine(
-              format.json({ space: 2 }),
-              format.metadata(),
-            ),
+            format: format.combine(format.json({ space: 2 }), format.metadata()),
           }),
           new transports.File({
             dirname: path.join(__dirname, './../logs/debug/'),
@@ -97,11 +89,7 @@ import { SharedModule } from './shared/shared.module';
         ],
         exceptionHandlers: [
           new transports.Console({
-            format: format.combine(
-              format.timestamp(),
-              format.json(),
-              format.metadata(),
-            ),
+            format: format.combine(format.timestamp(), format.json(), format.metadata()),
           }),
           new transports.File({
             dirname: path.join(__dirname, './../logs/exceptions/'),
