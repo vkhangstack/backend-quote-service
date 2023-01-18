@@ -61,6 +61,7 @@
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
     "mime-types": "^2.1.34",
+    "moment": "^2.29.4",
     "morgan": "^1.10.0",
     "nats": "^2.2.0",
     "nest-winston": "^1.8.0",
@@ -79,7 +80,6 @@
     "winston-mongodb": "^5.1.0"
   },
   "devDependencies": {
-    "@nestjs/cli": "^8.2.0",
     "@nestjs/testing": "^8.2.6",
     "@types/bcrypt": "^5.0.0",
     "@types/cache-manager-redis-store": "^2.0.1",

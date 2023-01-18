@@ -12,7 +12,7 @@ export class CreateTableQuotes1673277297964 implements MigrationInterface {
           "content"    character varying,
           "author"     character varying,
           "tags"       character varying,
-          "authorSlug" character varying,
+          "author_slug" character varying,
           "length"     numeric,
           CONSTRAINT "UQ_97672ac88f789772dd4797c8b2e" UNIQUE ("content"),
           CONSTRAINT "PK_a3ffb1c0c241659fc62907c7433" PRIMARY KEY ("id")

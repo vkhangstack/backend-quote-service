@@ -1,8 +1,4 @@
-import {
-  CreateDateColumn,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 import type { Constructor } from '../types';
 import type { AbstractDto } from './dto/abstract.dto';
@@ -23,10 +19,8 @@ export interface IAbstractEntity<DTO extends AbstractDto, O = never> {
   toDto(options?: O): DTO;
 }
 
-export abstract class AbstractEntity<
-  DTO extends AbstractDto = AbstractDto,
-  O = never,
-> implements IAbstractEntity<DTO, O>
+export abstract class AbstractEntity<DTO extends AbstractDto = AbstractDto, O = never>
+  implements IAbstractEntity<DTO, O>
 {
   @PrimaryGeneratedColumn('uuid')
   id: Uuid;
@@ -47,9 +41,7 @@ export abstract class AbstractEntity<
     const dtoClass = this.dtoClass;
 
     if (!dtoClass) {
-      throw new Error(
-        `You need to use @UseDto on class (${this.constructor.name}) be able to call toDto function`,
-      );
+      throw new Error(`You need to use @UseDto on class (${this.constructor.name}) be able to call toDto function`);
     }
 
     return new this.dtoClass(this, options);

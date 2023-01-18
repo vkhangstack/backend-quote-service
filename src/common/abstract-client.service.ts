@@ -36,12 +36,9 @@ export class AbstractClientService<ActionType> {
       isPage?: boolean;
     }>,
   ): Promise<R | PageDto<R> | void> {
-    const returnData = await firstValueFrom(
-      this.client.send<{ data?: R; meta?: PageMetaDto }>(pattern, data),
-      {
-        defaultValue: undefined,
-      },
-    );
+    const returnData = await firstValueFrom(this.client.send<{ data?: R; meta?: PageMetaDto }>(pattern, data), {
+      defaultValue: undefined,
+    });
 
     if (returnDataOptions?.isPage && (!returnData?.data || !returnData.meta)) {
       throw new PageTypeException();

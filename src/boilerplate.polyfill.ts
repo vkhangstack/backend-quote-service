@@ -43,10 +43,7 @@ declare module 'typeorm' {
 
     leftJoinAndSelect<AliasEntity extends AbstractEntity, Alias extends string>(
       this: SelectQueryBuilder<Entity>,
-      property: `${Alias}.${Exclude<
-        KeyOfType<AliasEntity, AbstractEntity>,
-        symbol
-      >}`,
+      property: `${Alias}.${Exclude<KeyOfType<AliasEntity, AbstractEntity>, symbol>}`,
       alias: string,
       condition?: string,
       parameters?: ObjectLiteral,
@@ -54,24 +51,15 @@ declare module 'typeorm' {
 
     leftJoin<AliasEntity extends AbstractEntity, Alias extends string>(
       this: SelectQueryBuilder<Entity>,
-      property: `${Alias}.${Exclude<
-        KeyOfType<AliasEntity, AbstractEntity>,
-        symbol
-      >}`,
+      property: `${Alias}.${Exclude<KeyOfType<AliasEntity, AbstractEntity>, symbol>}`,
       alias: string,
       condition?: string,
       parameters?: ObjectLiteral,
     ): this;
 
-    innerJoinAndSelect<
-      AliasEntity extends AbstractEntity,
-      Alias extends string,
-    >(
+    innerJoinAndSelect<AliasEntity extends AbstractEntity, Alias extends string>(
       this: SelectQueryBuilder<Entity>,
-      property: `${Alias}.${Exclude<
-        KeyOfType<AliasEntity, AbstractEntity>,
-        symbol
-      >}`,
+      property: `${Alias}.${Exclude<KeyOfType<AliasEntity, AbstractEntity>, symbol>}`,
       alias: string,
       condition?: string,
       parameters?: ObjectLiteral,
@@ -79,10 +67,7 @@ declare module 'typeorm' {
 
     innerJoin<AliasEntity extends AbstractEntity, Alias extends string>(
       this: SelectQueryBuilder<Entity>,
-      property: `${Alias}.${Exclude<
-        KeyOfType<AliasEntity, AbstractEntity>,
-        symbol
-      >}`,
+      property: `${Alias}.${Exclude<KeyOfType<AliasEntity, AbstractEntity>, symbol>}`,
       alias: string,
       condition?: string,
       parameters?: ObjectLiteral,
@@ -90,19 +75,11 @@ declare module 'typeorm' {
   }
 }
 
-Array.prototype.toDtos = function <
-  Entity extends AbstractEntity<Dto>,
-  Dto extends AbstractDto,
->(options?: unknown): Dto[] {
-  return compact(
-    map<Entity, Dto>(this as Entity[], (item) => item.toDto(options as never)),
-  );
+Array.prototype.toDtos = function <Entity extends AbstractEntity<Dto>, Dto extends AbstractDto>(options?: unknown): Dto[] {
+  return compact(map<Entity, Dto>(this as Entity[], (item) => item.toDto(options as never)));
 };
 
-Array.prototype.toPageDto = function (
-  pageMetaDto: PageMetaDto,
-  options?: unknown,
-) {
+Array.prototype.toPageDto = function (pageMetaDto: PageMetaDto, options?: unknown) {
   return new PageDto(this.toDtos(options), pageMetaDto);
 };
 
@@ -124,10 +101,7 @@ QueryBuilder.prototype.searchByString = function (q, columnNames) {
   return this;
 };
 
-SelectQueryBuilder.prototype.paginate = async function (
-  pageOptionsDto: PageOptionsDto,
-  options?: Partial<{ takeAll: boolean }>,
-) {
+SelectQueryBuilder.prototype.paginate = async function (pageOptionsDto: PageOptionsDto, options?: Partial<{ takeAll: boolean }>) {
   if (options?.takeAll) {
     this.skip(pageOptionsDto.skip).take(pageOptionsDto.take);
   }
@@ -137,8 +111,7 @@ SelectQueryBuilder.prototype.paginate = async function (
   const { entities, raw } = await this.getRawAndEntities();
 
   const items = entities.map((entity: AbstractEntity, index) => {
-    const metaInfo: Record<string, string> =
-      Reflect.getMetadata(VIRTUAL_COLUMN_KEY, entity) ?? {};
+    const metaInfo: Record<string, string> = Reflect.getMetadata(VIRTUAL_COLUMN_KEY, entity) ?? {};
     const item = raw[index];
 
     for (const [propertyKey, name] of Object.entries<string>(metaInfo)) {

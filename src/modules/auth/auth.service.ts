@@ -4,7 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { validateHash } from '../../common/utils';
 import type { RoleType } from '../../constants';
 import { TokenType } from '../../constants';
-import { UserNotFoundException } from '../../exceptions';
+import { UserWrongPassword } from '../../exceptions';
 import { ApiConfigService } from '../../shared/services/api-config.service';
 import type { UserEntity } from '../user/user.entity';
 import { UserService } from '../user/user.service';
@@ -50,7 +50,7 @@ export class AuthService {
     );
 
     if (!isPasswordValid) {
-      throw new UserNotFoundException();
+      throw new UserWrongPassword();
     }
 
     return user!;
