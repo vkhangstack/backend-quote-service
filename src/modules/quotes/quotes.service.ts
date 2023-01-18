@@ -5,20 +5,20 @@ import type { UpdateQuoteDto } from './dto/update-quote.dto';
 
 @Injectable()
 export class QuotesService {
-  create(_createQuoteDto: CreateQuoteDto) {
-    return 'This action adds a new quote';
+  create(createQuoteDto: CreateQuoteDto) {
+    return `This action adds a new quote ${createQuoteDto}`;
   }
 
   findAll() {
-    return [];
+    return 'This action returns all quotes';
   }
 
   findOne(id: number) {
     return `This action returns a #${id} quote`;
   }
 
-  update(id: number, _updateQuoteDto: UpdateQuoteDto) {
-    return `This action updates a #${id} quote`;
+  update(id: number, updateQuoteDto: UpdateQuoteDto) {
+    return `This action updates a #${id} quote and ${updateQuoteDto}`;
   }
 
   remove(id: number) {

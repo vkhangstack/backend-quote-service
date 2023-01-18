@@ -1,6 +1,1 @@
-import { ApiProperty } from '@nestjs/swagger';
-
-export class CreateQuoteDto {
-  @ApiProperty()
-  content: string;
-}
+export class CreateQuoteDto {}

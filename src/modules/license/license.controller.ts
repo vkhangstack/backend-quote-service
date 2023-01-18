@@ -31,7 +31,7 @@ export class LicenseController {
   async create(
     @Body() createLicenseDto: CreateLicenseDto,
     @AuthUser() user: UserEntity,
-  ): Promise<ResponseDto<CreateLicenseDto> | ResponseDto<Record<K, V>>> {
+  ): Promise<ResponseDto<CreateLicenseDto> | ResponseDto<string[]>> {
     try {
       this.loggerService.info('License controller execute func create');
       const data = await this.licenseService.create(createLicenseDto, user);
@@ -62,7 +62,7 @@ export class LicenseController {
   async activeLicenseToken(
     @Body() updateLicense: UpdateLicenseDto,
     @AuthUser() user: UserEntity,
-  ): Promise<ResponseDto<LicenseEntity> | ResponseDto<Record<K, V>>> {
+  ): Promise<ResponseDto<LicenseEntity> | ResponseDto<string[]>> {
     try {
       this.loggerService.info('LicenseController execute func activeLicenseToken');
       this.loggerService.debug('LicenseController execute func activeLicenseToken get user', user);
@@ -70,7 +70,7 @@ export class LicenseController {
 
       return {
         code: HttpStatus.OK,
-        data: {},
+        data: [],
         message: 'Active license successful',
       };
     } catch (error) {

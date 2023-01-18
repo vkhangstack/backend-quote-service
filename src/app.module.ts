@@ -76,9 +76,9 @@ import { SharedModule } from './shared/shared.module';
             db: configService.mongoConfig.uri,
             collection: 'logs-system',
             options: {
+              useNewUrlParser: true,
               useUnifiedTopology: true,
-              poolSize: 5,
-              autoReconnect: true,
+              poolSize: 10,
             },
             capped: true,
             cappedSize: 500_000,
@@ -100,8 +100,8 @@ import { SharedModule } from './shared/shared.module';
       }),
       inject: [ApiConfigService],
     }),
-    QuotesModule,
     LicenseModule,
+    QuotesModule,
   ],
 })
 export class AppModule {}

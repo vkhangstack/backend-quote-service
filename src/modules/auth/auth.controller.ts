@@ -98,7 +98,7 @@ export class AuthController {
   async userRegister(
     @Body() userRegisterDto: UserRegisterDto,
     @UploadedFile() file: IFile,
-  ): Promise<ResponseDto<UserDto> | ResponseDto<Record<K, V>>> {
+  ): Promise<ResponseDto<UserDto> | ResponseDto<string[]>> {
     try {
       const createdUser = await this.userService.createUser(userRegisterDto, file);
 
@@ -123,7 +123,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Auth([RoleType.USER, RoleType.ADMIN, RoleType.ROOT])
   @ApiOkResponse({ type: UserDto, description: 'current user info' })
-  getCurrentUser(@AuthUser() user: UserEntity): ResponseDto<UserDto> | ResponseDto<Record<K, V>> {
+  getCurrentUser(@AuthUser() user: UserEntity): ResponseDto<UserDto> | ResponseDto<string[]> {
     try {
       this.loggerService.info('AuthController execute func getCurrentUser');
       this.loggerService.debug('AuthController execute func getCurrentUser get data', user);
