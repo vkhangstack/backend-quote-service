@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Inject, Param, Patch, Post, Put } from '@nestjs/common';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Logger } from 'winston';
 
 import type { ResponseDto } from '../../common/dto/response.dto';
@@ -8,6 +8,7 @@ import { AuthUser } from '../../decorators/auth-user.decorator';
 import { Auth } from '../../decorators/http.decorators';
 import { UserEntity } from '../user/user.entity';
 import { CreateLicenseDto } from './dto/create-license.dto';
+import { LicenseDto } from './dto/license.dto';
 import { SearchLicenseDto } from './dto/search-license.dto';
 import { UpdateLicenseDto } from './dto/update-license.dto';
 import type { LicenseEntity } from './entities/license.entity';
@@ -63,7 +64,7 @@ export class LicenseController {
   async activeLicenseToken(
     @Body() updateLicense: UpdateLicenseDto,
     @AuthUser() user: UserEntity,
-  ): Promise<ResponseDto<LicenseEntity> | ResponseDto<Record<K, V>>> {
+  ): Promise<ResponseDto<LicenseEntity> | ResponseDto<any>> {
     try {
       this.loggerService.info('LicenseController execute func activeLicenseToken');
       this.loggerService.debug('LicenseController execute func activeLicenseToken get user', user);
@@ -96,11 +97,16 @@ export class LicenseController {
   @Delete()
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({
-    type: UpdateLicenseDto,
+    type: LicenseDto,
     description: 'Get all license token',
   })
+  @ApiBody({
+    required: false,
+    type: SearchLicenseDto,
+    enum: [1, 2],
+  })
   @Auth([RoleType.ADMIN, RoleType.ROOT])
-  async findAll(@Body() searchLicenseDto: SearchLicenseDto): Promise<ResponseDto<Record<K, V>>> {
+  async findAll(@Body() searchLicenseDto: SearchLicenseDto): Promise<ResponseDto<any>> {
     try {
       this.loggerService.info('LicenseController execute func findAll');
       this.loggerService.debug('LicenseController execute func findAll', searchLicenseDto);

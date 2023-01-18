@@ -39,7 +39,7 @@ export class LicenseService {
   }
 
   @Transactional()
-  async updateLicense(updateLicenseDto: UpdateLicenseDto, user: UserEntity): Promise<Record<K, V>> {
+  async updateLicense(updateLicenseDto: UpdateLicenseDto, user: UserEntity): Promise<any> {
     const record = await this.licenseRepository.findOne({ id: updateLicenseDto.licenseId });
 
     if (Number(record?.status) === STATUS.ACTIVE) {
