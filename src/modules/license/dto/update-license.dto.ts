@@ -1,5 +1,9 @@
-import { PartialType } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import { IsNotEmpty, IsString } from 'class-validator';
 
-import { CreateLicenseDto } from './create-license.dto';
-
-export class UpdateLicenseDto extends PartialType(CreateLicenseDto) {}
+export class UpdateLicenseDto {
+  @ApiPropertyOptional()
+  @IsNotEmpty()
+  @IsString()
+  readonly licenseId: string;
+}

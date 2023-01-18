@@ -1,15 +1,5 @@
 import { ApiException } from '@nanogiants/nestjs-swagger-api-exception-decorator';
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Inject,
-  Post,
-  UploadedFile,
-  Version,
-} from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Inject, Post, UploadedFile, Version } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Logger } from 'winston';
 
@@ -43,9 +33,7 @@ export class AuthController {
     type: LoginPayloadDto,
     description: 'Create account root with key app generate',
   })
-  async createRoot(
-    @Body() createRoot: CreateRootDto,
-  ): Promise<ResponseDto<UserDto> | ResponseDto<string[]>> {
+  async createRoot(@Body() createRoot: CreateRootDto): Promise<ResponseDto<UserDto> | ResponseDto<string[]>> {
     try {
       this.loggerService.info('Create root execute');
       this.loggerService.debug('createRoot receive body', createRoot);
@@ -76,9 +64,7 @@ export class AuthController {
     description: 'User info with access token',
   })
   @ApiException(() => [UserNotFoundException])
-  async userLogin(
-    @Body() userLoginDto: UserLoginDto,
-  ): Promise<ResponseDto<LoginPayloadDto> | ResponseDto<string[]>> {
+  async userLogin(@Body() userLoginDto: UserLoginDto): Promise<ResponseDto<LoginPayloadDto> | ResponseDto<string[]>> {
     try {
       this.loggerService.info('User login execute');
       this.loggerService.debug('User login receive body', userLoginDto);
@@ -112,15 +98,24 @@ export class AuthController {
   async userRegister(
     @Body() userRegisterDto: UserRegisterDto,
     @UploadedFile() file: IFile,
-  ): Promise<UserDto> {
-    const createdUser = await this.userService.createUser(
-      userRegisterDto,
-      file,
-    );
+  ): Promise<ResponseDto<UserDto> | ResponseDto<Record<K, V>>> {
+    try {
+      const createdUser = await this.userService.createUser(userRegisterDto, file);
 
-    return createdUser.toDto({
-      isActive: true,
-    });
+      return {
+        code: HttpStatus.OK,
+        data: createdUser.toDto({ isActive: true }),
+        message: 'Register user successful',
+      };
+    } catch (error) {
+      this.loggerService.error('User login error', error);
+
+      return {
+        code: HttpStatus.INTERNAL_SERVER_ERROR,
+        data: [],
+        message: 'Server error unknown',
+      };
+    }
   }
 
   @Version('1')
@@ -128,7 +123,24 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Auth([RoleType.USER, RoleType.ADMIN, RoleType.ROOT])
   @ApiOkResponse({ type: UserDto, description: 'current user info' })
-  getCurrentUser(@AuthUser() user: UserEntity): UserDto {
-    return user.toDto();
+  getCurrentUser(@AuthUser() user: UserEntity): ResponseDto<UserDto> | ResponseDto<Record<K, V>> {
+    try {
+      this.loggerService.info('AuthController execute func getCurrentUser');
+      this.loggerService.debug('AuthController execute func getCurrentUser get data', user);
+
+      return {
+        code: HttpStatus.OK,
+        data: user.toDto(),
+        message: 'Get info user successful!',
+      };
+    } catch (error) {
+      this.loggerService.error('User login error', error);
+
+      return {
+        code: HttpStatus.INTERNAL_SERVER_ERROR,
+        data: [],
+        message: 'Server error unknown',
+      };
+    }
   }
 }

@@ -13,6 +13,8 @@ export class CreateTableLicense1673632953022 implements MigrationInterface {
           "created_by" character varying,
           "updated_by" character varying,
           "user_id"    character varying,
+          "licenseKey" character varying,
+          "licenseToken" character varying,
           "expires"    numeric,
           "day_expire" numeric,
           "type_license" numeric,

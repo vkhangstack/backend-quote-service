@@ -1,24 +1,87 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Inject, Param, Patch, Post, Put } from '@nestjs/common';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { Logger } from 'winston';
 
+import type { ResponseDto } from '../../common/dto/response.dto';
+import { RoleType } from '../../constants';
+import { AuthUser } from '../../decorators/auth-user.decorator';
+import { Auth } from '../../decorators/http.decorators';
+import { UserEntity } from '../user/user.entity';
 import { CreateLicenseDto } from './dto/create-license.dto';
 import { UpdateLicenseDto } from './dto/update-license.dto';
+import type { LicenseEntity } from './entities/license.entity';
 import { LicenseService } from './license.service';
 
 @Controller('license')
+@ApiTags('license')
 export class LicenseController {
-  constructor(private readonly licenseService: LicenseService) {}
+  constructor(
+    private readonly licenseService: LicenseService,
+    @Inject('winston')
+    private loggerService: Logger,
+  ) {}
 
   @Post()
-  create(@Body() createLicenseDto: CreateLicenseDto) {
-    return this.licenseService.create(createLicenseDto);
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({
+    type: CreateLicenseDto,
+    description: 'Create license',
+  })
+  @Auth([RoleType.USER, RoleType.ADMIN, RoleType.ROOT])
+  async create(
+    @Body() createLicenseDto: CreateLicenseDto,
+    @AuthUser() user: UserEntity,
+  ): Promise<ResponseDto<CreateLicenseDto> | ResponseDto<Record<K, V>>> {
+    try {
+      this.loggerService.info('License controller execute func create');
+      const data = await this.licenseService.create(createLicenseDto, user);
+
+      return {
+        code: HttpStatus.OK,
+        data,
+        message: 'Create license successful!',
+      };
+    } catch (error) {
+      this.loggerService.error(`License controller func create error ${error}`);
+
+      return {
+        code: HttpStatus.INTERNAL_SERVER_ERROR,
+        data: [],
+        message: 'Server error unknown',
+      };
+    }
+  }
+
+  @Put('/active')
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({
+    type: UpdateLicenseDto,
+    description: 'Active license token',
+  })
+  @Auth([RoleType.USER, RoleType.ADMIN, RoleType.ROOT])
+  async activeLicenseToken(
+    @Body() updateLicense: UpdateLicenseDto,
+    @AuthUser() user: UserEntity,
+  ): Promise<ResponseDto<LicenseEntity> | ResponseDto<Record<K, V>>> {
+    try {
+      this.loggerService.info('LicenseController execute func activeLicenseToken');
+      this.loggerService.debug('LicenseController execute func activeLicenseToken get user', user);
+      await this.licenseService.updateLicense(updateLicense, user);
+
+      return {
+        code: HttpStatus.OK,
+        data: {},
+        message: 'Active license successful',
+      };
+    } catch (error) {
+      this.loggerService.error(`License controller func activeLicenseToken error ${error}`);
+
+      return {
+        code: HttpStatus.INTERNAL_SERVER_ERROR,
+        data: [],
+        message: 'Server error unknown',
+      };
+    }
   }
 
   @Get()
