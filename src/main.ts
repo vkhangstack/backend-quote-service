@@ -29,11 +29,7 @@ import { SharedModule } from './shared/shared.module';
 export async function bootstrap(): Promise<NestExpressApplication> {
   initializeTransactionalContext();
   patchTypeORMRepositoryWithBaseRepository();
-  const app = await NestFactory.create<NestExpressApplication>(
-    AppModule,
-    new ExpressAdapter(),
-    { cors: true },
-  );
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, new ExpressAdapter(), { cors: true });
   app.enable('trust proxy'); // only if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
   app.use(helmet());
   // app.setGlobalPrefix('/api'); use api as global prefix if you don't have subdomain
@@ -49,10 +45,7 @@ export async function bootstrap(): Promise<NestExpressApplication> {
 
   const reflector = app.get(Reflector);
 
-  app.useGlobalFilters(
-    new HttpExceptionFilter(reflector),
-    new QueryFailedFilter(reflector),
-  );
+  app.useGlobalFilters(new HttpExceptionFilter(reflector), new QueryFailedFilter(reflector));
 
   app.useGlobalInterceptors(new ClassSerializerInterceptor(reflector));
 

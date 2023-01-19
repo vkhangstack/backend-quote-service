@@ -57,17 +57,20 @@ import { SharedModule } from './shared/shared.module';
             dirname: path.join(__dirname, './../logs/debug/'),
             filename: 'debug.log',
             level: 'debug',
+            maxsize: 500_000,
             maxFiles: 90,
           }),
           new transports.File({
             dirname: path.join(__dirname, './../logs/error/'),
             filename: 'error.log',
             level: 'error',
+            maxsize: 500_000,
             maxFiles: 30,
           }),
           new transports.File({
             dirname: path.join(__dirname, './../logs/info/'),
             filename: 'info.log',
+            maxsize: 500_000,
             level: 'info',
             maxFiles: 30,
           }),
@@ -94,6 +97,7 @@ import { SharedModule } from './shared/shared.module';
           new transports.File({
             dirname: path.join(__dirname, './../logs/exceptions/'),
             filename: 'exceptions.log',
+            maxsize: 500_000,
           }),
         ],
         exitOnError: false,
