@@ -46,6 +46,7 @@ export class QuotesController {
   async create(@Body() createQuoteDto: CreateQuoteDto): Promise<any> {
     try {
       this.loggerService.info('Quotes controller execute func create');
+      this.loggerService.debug('Quotes controller execute func create receive body', createQuoteDto);
 
       const data = await this.quotesService.create(createQuoteDto);
 
@@ -84,6 +85,11 @@ export class QuotesController {
   @All('/random')
   async randomQuote(@Query('licenseKey') licenseKey: string, @Body() getQuoteDto: GetQuoteDto): Promise<any> {
     try {
+      this.loggerService.info('Quotes controller execute func randomQuote');
+      this.loggerService.debug('QuoteController execute func randomQuote get license key from query', {
+        licenseKey,
+      });
+      this.loggerService.debug('QuotesController execute func randomQuote get license key from body', getQuoteDto);
       licenseKey = licenseKey ? licenseKey : getQuoteDto.licenseKey;
       const license = await this.licenseService.checkLicenseKey(licenseKey);
 

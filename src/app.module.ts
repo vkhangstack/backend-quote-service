@@ -49,7 +49,7 @@ import { SharedModule } from './shared/shared.module';
     HealthCheckerModule,
     WinstonModule.forRootAsync({
       useFactory: (configService: ApiConfigService) => ({
-        format: format.combine(format.timestamp(), format.json(), format.metadata()),
+        format: format.combine(format.ms(), format.timestamp(), format.json(), format.metadata()),
         transports: [
           new transports.Console({
             level: 'debug',
@@ -90,6 +90,9 @@ import { SharedModule } from './shared/shared.module';
             storeHost: true,
             dbName: 'quotes-logs',
             expireAfterSeconds: 7_889_400,
+            label: 'quotes-service',
+            cappedMax: 50,
+            name: 'quotes-service',
           }),
         ],
         exceptionHandlers: [
