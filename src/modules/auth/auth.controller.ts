@@ -23,6 +23,7 @@ export class AuthController {
   constructor(
     private userService: UserService,
     private authService: AuthService,
+
     @Inject('winston')
     private loggerService: Logger,
   ) {}

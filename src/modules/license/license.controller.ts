@@ -19,6 +19,7 @@ import { LicenseService } from './license.service';
 export class LicenseController {
   constructor(
     private readonly licenseService: LicenseService,
+
     @Inject('winston')
     private loggerService: Logger,
   ) {}
@@ -41,7 +42,7 @@ export class LicenseController {
       return {
         code: HttpStatus.OK,
         data,
-        message: 'Create license successful!',
+        message: 'Created license successful!',
       };
     } catch (error) {
       this.loggerService.error(`License controller func create error ${error}`);
@@ -60,7 +61,7 @@ export class LicenseController {
     type: UpdateLicenseDto,
     description: 'Active license token',
   })
-  @Auth([RoleType.USER, RoleType.ADMIN, RoleType.ROOT])
+  @Auth([RoleType.ADMIN, RoleType.ROOT])
   async activeLicenseToken(
     @Body() updateLicense: UpdateLicenseDto,
     @AuthUser() user: UserEntity,
@@ -138,12 +139,12 @@ export class LicenseController {
     description: 'Get all license token',
   })
   @Auth([RoleType.ADMIN, RoleType.ROOT])
-  async findOne(@Param('id') id: Uuid) {
+  async findOne(@Param('id') id: Uuid): Promise<ResponseDto<any>> {
     try {
       this.loggerService.info('LicenseController execute func findOne');
       this.loggerService.debug('LicenseController execute func findOne receive id :', id);
-
-      const data = await this.licenseService.findOne(id);
+      const result = await this.licenseService.findOne(id);
+      const data = result === undefined ? [] : result;
 
       return {
         code: HttpStatus.OK,

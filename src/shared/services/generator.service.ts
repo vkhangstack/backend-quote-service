@@ -12,6 +12,10 @@ export class GeneratorService {
     return Crypto.createHash('sha256').update(this.uuid()).digest('base64');
   }
 
+  public randomHex(): string {
+    return Crypto.createHash('sha256').update(this.uuid()).digest('hex');
+  }
+
   public fileName(ext: string): string {
     return this.uuid() + '.' + ext;
   }

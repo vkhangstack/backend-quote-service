@@ -24,7 +24,7 @@ export class LicenseService {
 
   @Transactional()
   async create(createLicenseDto: CreateLicenseDto, user: IUserEntity): Promise<LicenseEntity> {
-    const licenseKey = this.generateService.uuid();
+    const licenseKey = this.generateService.randomHex();
 
     const model = this.licenseRepository.create({
       ...createLicenseDto,
@@ -41,6 +41,7 @@ export class LicenseService {
   @Transactional()
   async updateLicense(updateLicenseDto: UpdateLicenseDto, user: UserEntity): Promise<any> {
     const record = await this.licenseRepository.findOne({ id: updateLicenseDto.licenseId });
+    const expires = daysToTimestamp(Number(record?.dayExpire));
 
     if (Number(record?.status) === STATUS.ACTIVE) {
       return HttpStatus.CONFLICT;
@@ -62,20 +63,19 @@ export class LicenseService {
         status: STATUS.ACTIVE,
         updatedAt: new Date(),
         updatedBy: user.username,
-        expires: daysToTimestamp(Number(record?.dayExpire)),
+        expires,
         licenseToken,
       })
       .where('id = :id', { id: updateLicenseDto.licenseId })
       .execute();
 
     return {
-      license: {
-        licenseToken,
-        licenseKey: record?.licenseKey,
-        expireIn: record?.expires,
-        createdAt: record?.createdAt,
-        dayExpire: record?.dayExpire,
-      },
+      licenseToken,
+      licenseKey: record?.licenseKey,
+      expireIn: expires,
+      dayExpire: record?.dayExpire,
+      createdAt: record?.createdAt,
+      updatedBy: user.username,
     };
   }
 
@@ -85,6 +85,20 @@ export class LicenseService {
     }
 
     return this.licenseRepository.find({ status: searchLicenseDto.status });
+  }
+
+  async checkLicenseKey(licenseKey: string): Promise<any> {
+    const record = await this.licenseRepository.findOne({ where: { licenseKey } });
+
+    if (!record) {
+      return -1;
+    }
+
+    if (record && record?.expires < Date.now()) {
+      return -2;
+    }
+
+    return record?.licenseKey;
   }
 
   findOne(id: Uuid) {

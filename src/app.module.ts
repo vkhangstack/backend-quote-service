@@ -12,7 +12,7 @@ import { format, transports } from 'winston';
 import { AuthModule } from './modules/auth/auth.module';
 import { HealthCheckerModule } from './modules/health-checker/health-checker.module';
 import { LicenseModule } from './modules/license/license.module';
-import { PostModule } from './modules/post/post.module';
+// import { PostModule } from './modules/post/post.module';
 import { QuotesModule } from './modules/quotes/quotes.module';
 import { UserModule } from './modules/user/user.module';
 import { ApiConfigService } from './shared/services/api-config.service';
@@ -22,7 +22,9 @@ import { SharedModule } from './shared/shared.module';
   imports: [
     AuthModule,
     UserModule,
-    PostModule,
+    // PostModule,
+    LicenseModule,
+    QuotesModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
@@ -104,8 +106,6 @@ import { SharedModule } from './shared/shared.module';
       }),
       inject: [ApiConfigService],
     }),
-    LicenseModule,
-    QuotesModule,
   ],
 })
 export class AppModule {}
