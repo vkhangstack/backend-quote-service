@@ -27,7 +27,7 @@ export interface IUserEntity extends IAbstractEntity<UserDto> {
 
   fullName?: string;
 
-  username: string;
+  username?: string;
 
   settings?: IUserSettingsEntity;
 }

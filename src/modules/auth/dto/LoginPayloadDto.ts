@@ -5,13 +5,13 @@ import { TokenPayloadDto } from './TokenPayloadDto';
 
 export class LoginPayloadDto {
   @ApiProperty({ type: UserDto })
-  user: UserDto;
+  userInfo?: UserDto;
 
   @ApiProperty({ type: TokenPayloadDto })
-  token: TokenPayloadDto;
+  auth: TokenPayloadDto;
 
   constructor(user: UserDto, token: TokenPayloadDto) {
-    this.user = user;
-    this.token = token;
+    this.userInfo = user;
+    this.auth = token;
   }
 }

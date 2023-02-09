@@ -71,6 +71,14 @@ export class AuthController {
       this.loggerService.debug('User login receive body', userLoginDto);
       const userEntity = await this.authService.validateUser(userLoginDto);
 
+      if (!userEntity) {
+        return {
+          code: HttpStatus.NOT_FOUND,
+          data: [],
+          message: 'Wrong user or password',
+        };
+      }
+
       const token = await this.authService.createAccessToken({
         userId: userEntity.id,
         role: userEntity.role,
@@ -78,11 +86,12 @@ export class AuthController {
 
       return {
         code: HttpStatus.OK,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         data: new LoginPayloadDto(userEntity.toDto(), token),
         message: 'Login success!',
       };
     } catch (error) {
-      this.loggerService.error('User login error', error);
+      this.loggerService.error('User login error by', error);
 
       return {
         code: HttpStatus.INTERNAL_SERVER_ERROR,
