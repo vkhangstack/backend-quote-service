@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Transactional } from 'typeorm-transactional-cls-hooked';
 
@@ -7,6 +7,7 @@ import { ApiConfigService } from '../../shared/services/api-config.service';
 import { GeneratorService } from '../../shared/services/generator.service';
 import { IUserEntity, UserEntity } from '../user/user.entity';
 import { CreateLicenseDto } from './dto/create-license.dto';
+import type { SearchLicenseDto } from './dto/search-license.dto';
 import { UpdateLicenseDto } from './dto/update-license.dto';
 import { LicenseEntity } from './entities/license.entity';
 import { STATUS } from './license.enum';
@@ -23,7 +24,7 @@ export class LicenseService {
 
   @Transactional()
   async create(createLicenseDto: CreateLicenseDto, user: IUserEntity): Promise<LicenseEntity> {
-    const licenseKey = this.generateService.uuid();
+    const licenseKey = this.generateService.randomHex();
 
     const model = this.licenseRepository.create({
       ...createLicenseDto,
@@ -38,11 +39,12 @@ export class LicenseService {
   }
 
   @Transactional()
-  async updateLicense(updateLicenseDto: UpdateLicenseDto, user: UserEntity) {
+  async updateLicense(updateLicenseDto: UpdateLicenseDto, user: UserEntity): Promise<any> {
     const record = await this.licenseRepository.findOne({ id: updateLicenseDto.licenseId });
+    const expires = daysToTimestamp(Number(record?.dayExpire));
 
     if (Number(record?.status) === STATUS.ACTIVE) {
-      throw new Error('Status license is active');
+      return HttpStatus.CONFLICT;
     }
 
     const licenseToken = await this.jwtService.signAsync(
@@ -61,19 +63,46 @@ export class LicenseService {
         status: STATUS.ACTIVE,
         updatedAt: new Date(),
         updatedBy: user.username,
-        expires: daysToTimestamp(Number(record?.dayExpire)),
+        expires,
         licenseToken,
       })
       .where('id = :id', { id: updateLicenseDto.licenseId })
       .execute();
+
+    return {
+      licenseToken,
+      licenseKey: record?.licenseKey,
+      expireIn: expires,
+      dayExpire: record?.dayExpire,
+      createdAt: record?.createdAt,
+      updatedBy: user.username,
+    };
   }
 
-  findAll() {
-    return 'This action returns all license';
+  async findAll(searchLicenseDto: SearchLicenseDto): Promise<LicenseEntity[]> {
+    if (!searchLicenseDto.status) {
+      return this.licenseRepository.find();
+    }
+
+    return this.licenseRepository.find({ status: searchLicenseDto.status });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} license`;
+  async checkLicenseKey(licenseKey: string): Promise<any> {
+    const record = await this.licenseRepository.findOne({ where: { licenseKey } });
+
+    if (!record) {
+      return -1;
+    }
+
+    if (record && record?.expires < Date.now()) {
+      return -2;
+    }
+
+    return record?.licenseKey;
+  }
+
+  findOne(id: Uuid) {
+    return this.licenseRepository.findOne({ id });
   }
 
   update(id: number, updateLicenseDto: UpdateLicenseDto) {

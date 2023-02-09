@@ -1,29 +1,26 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 import { AbstractDto } from '../../../common/dto/abstract.dto';
 
-export class LicenseDto extends AbstractDto {
+export class QuoteDto extends AbstractDto {
   @ApiPropertyOptional()
   @IsNotEmpty()
   @IsString()
-  userId?: string;
-
-  @ApiPropertyOptional()
-  @IsNotEmpty()
-  @IsNumber()
-  expires?: number;
-
-  @ApiPropertyOptional()
-  @IsNotEmpty()
-  @IsNumber()
-  dayExpire?: number;
+  content: string;
 
   @ApiPropertyOptional()
   @IsNotEmpty()
   @IsString()
-  typeLicense?: number;
+  author: string;
 
   @ApiPropertyOptional()
-  status?: number;
+  @IsNotEmpty()
+  @IsString()
+  tags?: string[];
+
+  @ApiPropertyOptional()
+  @IsNotEmpty()
+  @IsString()
+  length?: string;
 }

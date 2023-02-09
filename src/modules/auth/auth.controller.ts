@@ -23,6 +23,7 @@ export class AuthController {
   constructor(
     private userService: UserService,
     private authService: AuthService,
+
     @Inject('winston')
     private loggerService: Logger,
   ) {}
@@ -70,6 +71,14 @@ export class AuthController {
       this.loggerService.debug('User login receive body', userLoginDto);
       const userEntity = await this.authService.validateUser(userLoginDto);
 
+      if (!userEntity) {
+        return {
+          code: HttpStatus.NOT_FOUND,
+          data: [],
+          message: 'Wrong user or password',
+        };
+      }
+
       const token = await this.authService.createAccessToken({
         userId: userEntity.id,
         role: userEntity.role,
@@ -77,11 +86,12 @@ export class AuthController {
 
       return {
         code: HttpStatus.OK,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         data: new LoginPayloadDto(userEntity.toDto(), token),
         message: 'Login success!',
       };
     } catch (error) {
-      this.loggerService.error('User login error', error);
+      this.loggerService.error('User login error by', error);
 
       return {
         code: HttpStatus.INTERNAL_SERVER_ERROR,
@@ -98,7 +108,7 @@ export class AuthController {
   async userRegister(
     @Body() userRegisterDto: UserRegisterDto,
     @UploadedFile() file: IFile,
-  ): Promise<ResponseDto<UserDto> | ResponseDto<Record<K, V>>> {
+  ): Promise<ResponseDto<UserDto> | ResponseDto<string[]>> {
     try {
       const createdUser = await this.userService.createUser(userRegisterDto, file);
 
@@ -123,7 +133,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Auth([RoleType.USER, RoleType.ADMIN, RoleType.ROOT])
   @ApiOkResponse({ type: UserDto, description: 'current user info' })
-  getCurrentUser(@AuthUser() user: UserEntity): ResponseDto<UserDto> | ResponseDto<Record<K, V>> {
+  getCurrentUser(@AuthUser() user: UserEntity): ResponseDto<UserDto> | ResponseDto<string[]> {
     try {
       this.loggerService.info('AuthController execute func getCurrentUser');
       this.loggerService.debug('AuthController execute func getCurrentUser get data', user);

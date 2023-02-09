@@ -49,9 +49,7 @@ export class AddPostsTable1641994291086 implements MigrationInterface {
       DROP CONSTRAINT "FK_11f143c8b50a9ff60340edca475"`);
     await queryRunner.query('DROP TABLE "posts"');
     await queryRunner.query('DROP TABLE "post_translations"');
-    await queryRunner.query(
-      'DROP TYPE "public"."post_translations_language_code_enum"',
-    );
+    await queryRunner.query('DROP TYPE "public"."post_translations_language_code_enum"');
     await queryRunner.query(`ALTER TABLE "user_settings"
       ADD CONSTRAINT "FK_19f4e08665a1f4bbbb7d5631f35" FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
   }

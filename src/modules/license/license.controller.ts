@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Inject, Param, Patch, Post, Put } from '@nestjs/common';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Logger } from 'winston';
 
 import type { ResponseDto } from '../../common/dto/response.dto';
@@ -8,6 +8,8 @@ import { AuthUser } from '../../decorators/auth-user.decorator';
 import { Auth } from '../../decorators/http.decorators';
 import { UserEntity } from '../user/user.entity';
 import { CreateLicenseDto } from './dto/create-license.dto';
+import { LicenseDto } from './dto/license.dto';
+import { SearchLicenseDto } from './dto/search-license.dto';
 import { UpdateLicenseDto } from './dto/update-license.dto';
 import type { LicenseEntity } from './entities/license.entity';
 import { LicenseService } from './license.service';
@@ -17,6 +19,7 @@ import { LicenseService } from './license.service';
 export class LicenseController {
   constructor(
     private readonly licenseService: LicenseService,
+
     @Inject('winston')
     private loggerService: Logger,
   ) {}
@@ -31,7 +34,7 @@ export class LicenseController {
   async create(
     @Body() createLicenseDto: CreateLicenseDto,
     @AuthUser() user: UserEntity,
-  ): Promise<ResponseDto<CreateLicenseDto> | ResponseDto<Record<K, V>>> {
+  ): Promise<ResponseDto<CreateLicenseDto> | ResponseDto<string[]>> {
     try {
       this.loggerService.info('License controller execute func create');
       const data = await this.licenseService.create(createLicenseDto, user);
@@ -39,7 +42,7 @@ export class LicenseController {
       return {
         code: HttpStatus.OK,
         data,
-        message: 'Create license successful!',
+        message: 'Created license successful!',
       };
     } catch (error) {
       this.loggerService.error(`License controller func create error ${error}`);
@@ -58,19 +61,27 @@ export class LicenseController {
     type: UpdateLicenseDto,
     description: 'Active license token',
   })
-  @Auth([RoleType.USER, RoleType.ADMIN, RoleType.ROOT])
+  @Auth([RoleType.ADMIN, RoleType.ROOT])
   async activeLicenseToken(
     @Body() updateLicense: UpdateLicenseDto,
     @AuthUser() user: UserEntity,
-  ): Promise<ResponseDto<LicenseEntity> | ResponseDto<Record<K, V>>> {
+  ): Promise<ResponseDto<LicenseEntity> | ResponseDto<any>> {
     try {
       this.loggerService.info('LicenseController execute func activeLicenseToken');
       this.loggerService.debug('LicenseController execute func activeLicenseToken get user', user);
-      await this.licenseService.updateLicense(updateLicense, user);
+      const data = await this.licenseService.updateLicense(updateLicense, user);
+
+      if (data === HttpStatus.CONFLICT) {
+        return {
+          code: HttpStatus.CONFLICT,
+          data: [],
+          message: 'License is active',
+        };
+      }
 
       return {
         code: HttpStatus.OK,
-        data: {},
+        data,
         message: 'Active license successful',
       };
     } catch (error) {
@@ -84,14 +95,71 @@ export class LicenseController {
     }
   }
 
-  @Get()
-  findAll() {
-    return this.licenseService.findAll();
+  @Delete()
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({
+    type: LicenseDto,
+    description: 'Get all license token',
+  })
+  @ApiBody({
+    required: false,
+    type: SearchLicenseDto,
+    enum: [1, 2],
+  })
+  @Auth([RoleType.ADMIN, RoleType.ROOT])
+  async findAll(@Body() searchLicenseDto: SearchLicenseDto): Promise<ResponseDto<any>> {
+    try {
+      this.loggerService.info('LicenseController execute func findAll');
+      this.loggerService.debug('LicenseController execute func findAll', searchLicenseDto);
+      const data = await this.licenseService.findAll(searchLicenseDto);
+
+      return {
+        code: HttpStatus.OK,
+        data: {
+          list: data,
+          total: data.length,
+        },
+        message: 'Get all license successful',
+      };
+    } catch (error) {
+      this.loggerService.error(`License controller func findAll error ${error}`);
+
+      return {
+        code: HttpStatus.INTERNAL_SERVER_ERROR,
+        data: [],
+        message: 'Server error unknown',
+      };
+    }
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.licenseService.findOne(Number(id));
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({
+    type: UpdateLicenseDto,
+    description: 'Get all license token',
+  })
+  @Auth([RoleType.ADMIN, RoleType.ROOT])
+  async findOne(@Param('id') id: Uuid): Promise<ResponseDto<any>> {
+    try {
+      this.loggerService.info('LicenseController execute func findOne');
+      this.loggerService.debug('LicenseController execute func findOne receive id :', id);
+      const result = await this.licenseService.findOne(id);
+      const data = result === undefined ? [] : result;
+
+      return {
+        code: HttpStatus.OK,
+        data,
+        message: 'Get license successful',
+      };
+    } catch (error) {
+      this.loggerService.error(`License controller func findOne error ${error}`);
+
+      return {
+        code: HttpStatus.INTERNAL_SERVER_ERROR,
+        data: [],
+        message: 'Server error unknown',
+      };
+    }
   }
 
   @Patch(':id')

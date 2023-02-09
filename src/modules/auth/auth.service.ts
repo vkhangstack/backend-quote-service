@@ -4,7 +4,6 @@ import { JwtService } from '@nestjs/jwt';
 import { validateHash } from '../../common/utils';
 import type { RoleType } from '../../constants';
 import { TokenType } from '../../constants';
-import { UserWrongPassword } from '../../exceptions';
 import { ApiConfigService } from '../../shared/services/api-config.service';
 import type { UserEntity } from '../user/user.entity';
 import { UserService } from '../user/user.service';
@@ -19,12 +18,12 @@ export class AuthService {
     private userService: UserService,
   ) {}
 
-  async createAccessToken(data: {
-    role: RoleType;
-    userId: Uuid;
-  }): Promise<TokenPayloadDto> {
+  async createAccessToken(data: { role: RoleType; userId: Uuid }): Promise<TokenPayloadDto> {
+    const expiresIn = this.configService.authConfig.jwtExpirationTime;
+
     return new TokenPayloadDto({
-      expiresIn: this.configService.authConfig.jwtExpirationTime,
+      expiresIn,
+      refreshToken: Date.now() + Number(expiresIn),
       accessToken: await this.jwtService.signAsync(
         {
           userId: data.userId,
@@ -38,19 +37,16 @@ export class AuthService {
     });
   }
 
-  async validateUser(userLoginDto: UserLoginDto): Promise<UserEntity> {
+  async validateUser(userLoginDto: UserLoginDto): Promise<UserEntity | any> {
     const user = await this.userService.findByUsernameOrEmail({
       username: userLoginDto.username,
       email: userLoginDto.email,
     });
 
-    const isPasswordValid = await validateHash(
-      userLoginDto.password,
-      user?.password,
-    );
+    const isPasswordValid = await validateHash(userLoginDto.password, user?.password);
 
     if (!isPasswordValid) {
-      throw new UserWrongPassword();
+      return false;
     }
 
     return user!;
