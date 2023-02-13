@@ -32,7 +32,7 @@ export async function bootstrap(): Promise<NestExpressApplication> {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, new ExpressAdapter(), { cors: true });
   app.enable('trust proxy'); // only if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
   app.use(helmet());
-  // app.setGlobalPrefix('/api'); use api as global prefix if you don't have subdomain
+  app.setGlobalPrefix('/api'); //use api as global prefix if you don't have subdomain
   app.use(
     rateLimit({
       windowMs: 15 * 60 * 1000, // 15 minutes
@@ -92,7 +92,7 @@ export async function bootstrap(): Promise<NestExpressApplication> {
   await app.listen(port);
 
   Logger.log(`server running on ${await app.getUrl()}`);
-  console.info(`App run generate root key "${key}"`);
+  Logger.verbose(`App run generate root key "${key}"`);
 
   return app;
 }

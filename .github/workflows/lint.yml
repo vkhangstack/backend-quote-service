@@ -7,12 +7,12 @@ on:
     branches:
       - main
       - master
-      - develop
+      - dev
   pull_request:
     branches:
       - main
       - master
-      - develop
+      - dev
 
 jobs:
   run-linters:
