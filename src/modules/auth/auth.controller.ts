@@ -144,7 +144,7 @@ export class AuthController {
         message: 'Get info user successful!',
       };
     } catch (error) {
-      this.loggerService.error('User login error', error);
+      this.loggerService.error('AuthController execute func getCurrentUser error', error);
 
       return {
         code: HttpStatus.INTERNAL_SERVER_ERROR,
