@@ -2,23 +2,13 @@ import type { NamingStrategyInterface } from 'typeorm';
 import { DefaultNamingStrategy } from 'typeorm';
 import { snakeCase } from 'typeorm/util/StringUtils';
 
-export class SnakeNamingStrategy
-  extends DefaultNamingStrategy
-  implements NamingStrategyInterface
-{
+export class SnakeNamingStrategy extends DefaultNamingStrategy implements NamingStrategyInterface {
   tableName(className: string, customName: string): string {
     return customName ? customName : snakeCase(className);
   }
 
-  columnName(
-    propertyName: string,
-    customName: string,
-    embeddedPrefixes: string[],
-  ): string {
-    return (
-      snakeCase(embeddedPrefixes.join('_')) +
-      (customName ? customName : snakeCase(propertyName))
-    );
+  columnName(propertyName: string, customName: string, embeddedPrefixes: string[]): string {
+    return snakeCase(embeddedPrefixes.join('_')) + (customName ? customName : snakeCase(propertyName));
   }
 
   relationName(propertyName: string): string {
@@ -35,29 +25,14 @@ export class SnakeNamingStrategy
     firstPropertyName: string,
     _secondPropertyName: string,
   ): string {
-    return snakeCase(
-      firstTableName +
-        '_' +
-        firstPropertyName.replace(/\./gi, '_') +
-        '_' +
-        secondTableName,
-    );
+    return snakeCase(firstTableName + '_' + firstPropertyName.replace(/\./gi, '_') + '_' + secondTableName);
   }
 
-  joinTableColumnName(
-    tableName: string,
-    propertyName: string,
-    columnName?: string,
-  ): string {
-    return snakeCase(
-      tableName + '_' + (columnName ? columnName : propertyName),
-    );
+  joinTableColumnName(tableName: string, propertyName: string, columnName?: string): string {
+    return snakeCase(tableName + '_' + (columnName ? columnName : propertyName));
   }
 
-  classTableInheritanceParentColumnName(
-    parentTableName: string,
-    parentTableIdPropertyName: string,
-  ): string {
+  classTableInheritanceParentColumnName(parentTableName: string, parentTableIdPropertyName: string): string {
     return snakeCase(`${parentTableName}_${parentTableIdPropertyName}`);
   }
 }

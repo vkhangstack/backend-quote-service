@@ -7,13 +7,14 @@ import { JwtStrategy } from '../auth/jwt.strategy';
 import { PublicStrategy } from '../auth/public.strategy';
 import { UserRepository } from '../user/user.repository';
 import { UserService } from '../user/user.service';
+import { UserSettingsRepository } from '../user/user-settings.repository';
 import { LicenseController } from './license.controller';
 import { LicenseRepository } from './license.repository';
 import { LicenseService } from './license.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([LicenseRepository, UserRepository]),
+    TypeOrmModule.forFeature([LicenseRepository, UserRepository, UserSettingsRepository]),
     JwtModule.registerAsync({
       useFactory: (configService: ApiConfigService) => ({
         privateKey: configService.authConfig.privateKey,

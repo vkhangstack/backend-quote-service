@@ -23,7 +23,7 @@ export class AuthService {
 
     return new TokenPayloadDto({
       expiresIn,
-      refreshToken: Date.now() + Number(expiresIn),
+      refreshExpireAt: Date.now() + Number(expiresIn),
       accessToken: await this.jwtService.signAsync(
         {
           userId: data.userId,
@@ -43,12 +43,16 @@ export class AuthService {
       email: userLoginDto.email,
     });
 
+    if (!user) {
+      return false;
+    }
+
     const isPasswordValid = await validateHash(userLoginDto.password, user?.password);
 
     if (!isPasswordValid) {
       return false;
     }
 
-    return user!;
+    return user;
   }
 }

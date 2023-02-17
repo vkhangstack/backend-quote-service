@@ -18,10 +18,7 @@ export interface IUserSettingsEntity extends IAbstractEntity<UserDto> {
 
 @Entity({ name: 'user_settings' })
 @UseDto(UserDto)
-export class UserSettingsEntity
-  extends AbstractEntity<UserDto, UserDtoOptions>
-  implements IUserSettingsEntity
-{
+export class UserSettingsEntity extends AbstractEntity<UserDto, UserDtoOptions> implements IUserSettingsEntity {
   @Column({ default: false })
   isEmailVerified?: boolean;
 

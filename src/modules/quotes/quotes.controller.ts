@@ -42,7 +42,7 @@ export class QuotesController {
     type: QuoteDto,
     description: 'Create quotes',
   })
-  @Auth([RoleType.ADMIN, RoleType.ROOT])
+  @Auth([RoleType.ADMIN])
   async create(@Body() createQuoteDto: CreateQuoteDto): Promise<any> {
     try {
       this.loggerService.info('Quotes controller execute func create');
@@ -71,7 +71,7 @@ export class QuotesController {
     type: QuoteDto,
     description: 'get all quotes',
   })
-  @Auth([RoleType.ADMIN, RoleType.ROOT])
+  @Auth([RoleType.ADMIN])
   @Get()
   findAll(): string {
     return this.quotesService.findAll();
