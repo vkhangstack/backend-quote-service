@@ -23,7 +23,7 @@ export class AuthService {
 
     return new TokenPayloadDto({
       expiresIn,
-      refreshToken: Date.now() + Number(expiresIn),
+      refreshExpireAt: Date.now() + Number(expiresIn),
       accessToken: await this.jwtService.signAsync(
         {
           userId: data.userId,
