@@ -1,14 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Post,
-  Put,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Post, Put, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { RoleType } from '../../constants';
@@ -28,14 +18,8 @@ export class PostController {
 
   @Post()
   @Auth([RoleType.USER])
-  async createPost(
-    @Body() createPostDto: CreatePostDto,
-    @AuthUser() user: UserEntity,
-  ) {
-    const postEntity = await this.postService.createPost(
-      user.id,
-      createPostDto,
-    );
+  async createPost(@Body() createPostDto: CreatePostDto, @AuthUser() user: UserEntity) {
+    const postEntity = await this.postService.createPost(user.id, createPostDto);
 
     return postEntity.toDto();
   }
@@ -58,10 +42,7 @@ export class PostController {
 
   @Put(':id')
   @HttpCode(HttpStatus.ACCEPTED)
-  updatePost(
-    @UUIDParam('id') id: Uuid,
-    @Body() updatePostDto: UpdatePostDto,
-  ): Promise<void> {
+  updatePost(@UUIDParam('id') id: Uuid, @Body() updatePostDto: UpdatePostDto): Promise<void> {
     return this.postService.updatePost(id, updatePostDto);
   }
 

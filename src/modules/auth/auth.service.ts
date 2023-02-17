@@ -43,12 +43,16 @@ export class AuthService {
       email: userLoginDto.email,
     });
 
+    if (!user) {
+      return false;
+    }
+
     const isPasswordValid = await validateHash(userLoginDto.password, user?.password);
 
     if (!isPasswordValid) {
       return false;
     }
 
-    return user!;
+    return user;
   }
 }

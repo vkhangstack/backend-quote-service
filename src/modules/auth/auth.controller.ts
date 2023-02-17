@@ -11,6 +11,7 @@ import { IFile } from '../../interfaces';
 import { UserDto } from '../user/dtos/user.dto';
 import { UserEntity } from '../user/user.entity';
 import { UserService } from '../user/user.service';
+import { AuthEnum, MessageAuthEnum } from './auth.enum';
 import { AuthService } from './auth.service';
 import { CreateRootDto } from './dto/CreateRootDto';
 import { LoginPayloadDto } from './dto/LoginPayloadDto';
@@ -41,9 +42,9 @@ export class AuthController {
       const createdUser = await this.userService.createRoot(createRoot);
 
       return {
-        code: HttpStatus.OK,
+        code: AuthEnum.CREATE_ADMIN_SUCCESS,
         data: createdUser.toDto({
-          isActive: true,
+          isActive: false,
         }),
         message: 'Create root success!',
       };
@@ -51,7 +52,7 @@ export class AuthController {
       this.loggerService.error('createRoot error', error);
 
       return {
-        code: HttpStatus.INTERNAL_SERVER_ERROR,
+        code: AuthEnum.CREATE_ADMIN_FAILURE,
         data: [],
         message: 'Server error unknown',
       };
@@ -65,7 +66,7 @@ export class AuthController {
     description: 'User info with access token',
   })
   @ApiException(() => [UserNotFoundException])
-  async userLogin(@Body() userLoginDto: UserLoginDto): Promise<ResponseDto<LoginPayloadDto> | ResponseDto<string[]>> {
+  async login(@Body() userLoginDto: UserLoginDto): Promise<ResponseDto<LoginPayloadDto> | ResponseDto<string[]>> {
     try {
       this.loggerService.info('User login execute');
       this.loggerService.debug('User login receive body', userLoginDto);
@@ -73,9 +74,9 @@ export class AuthController {
 
       if (!userEntity) {
         return {
-          code: HttpStatus.NOT_FOUND,
+          code: AuthEnum.LOGIN_FAILURE,
           data: [],
-          message: 'Wrong user or password',
+          message: MessageAuthEnum.LOGIN_4000,
         };
       }
 
@@ -85,16 +86,16 @@ export class AuthController {
       });
 
       return {
-        code: HttpStatus.OK,
+        code: AuthEnum.LOGIN_SUCCESS,
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         data: new LoginPayloadDto(userEntity.toDto(), token),
-        message: 'Login success!',
+        message: MessageAuthEnum.LOGIN_2000,
       };
     } catch (error) {
       this.loggerService.error('User login error by', error);
 
       return {
-        code: HttpStatus.INTERNAL_SERVER_ERROR,
+        code: '5000',
         data: [],
         message: 'Server error unknown',
       };
@@ -113,15 +114,15 @@ export class AuthController {
       const createdUser = await this.userService.createUser(userRegisterDto, file);
 
       return {
-        code: HttpStatus.OK,
-        data: createdUser.toDto({ isActive: true }),
+        code: '2000',
+        data: createdUser.toDto({ isActive: false }),
         message: 'Register user successful',
       };
     } catch (error) {
       this.loggerService.error('User login error', error);
 
       return {
-        code: HttpStatus.INTERNAL_SERVER_ERROR,
+        code: '5000',
         data: [],
         message: 'Server error unknown',
       };
@@ -131,7 +132,7 @@ export class AuthController {
   @Version('1')
   @Get('me')
   @HttpCode(HttpStatus.OK)
-  @Auth([RoleType.USER, RoleType.ADMIN, RoleType.ROOT])
+  @Auth([RoleType.USER, RoleType.ADMIN])
   @ApiOkResponse({ type: UserDto, description: 'current user info' })
   getCurrentUser(@AuthUser() user: UserEntity): ResponseDto<UserDto> | ResponseDto<string[]> {
     try {
@@ -139,7 +140,7 @@ export class AuthController {
       this.loggerService.debug('AuthController execute func getCurrentUser get data', user);
 
       return {
-        code: HttpStatus.OK,
+        code: '2000',
         data: user.toDto(),
         message: 'Get info user successful!',
       };
@@ -147,7 +148,7 @@ export class AuthController {
       this.loggerService.error('AuthController execute func getCurrentUser error', error);
 
       return {
-        code: HttpStatus.INTERNAL_SERVER_ERROR,
+        code: '5000',
         data: [],
         message: 'Server error unknown',
       };

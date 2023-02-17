@@ -30,7 +30,7 @@ export class LicenseController {
     type: CreateLicenseDto,
     description: 'Create license',
   })
-  @Auth([RoleType.USER, RoleType.ADMIN, RoleType.ROOT])
+  @Auth([RoleType.USER, RoleType.ADMIN])
   async create(
     @Body() createLicenseDto: CreateLicenseDto,
     @AuthUser() user: UserEntity,
@@ -40,7 +40,7 @@ export class LicenseController {
       const data = await this.licenseService.create(createLicenseDto, user);
 
       return {
-        code: HttpStatus.OK,
+        code: '2000',
         data,
         message: 'Created license successful!',
       };
@@ -48,7 +48,7 @@ export class LicenseController {
       this.loggerService.error(`License controller func create error ${error}`);
 
       return {
-        code: HttpStatus.INTERNAL_SERVER_ERROR,
+        code: '4000',
         data: [],
         message: 'Server error unknown',
       };
@@ -61,7 +61,7 @@ export class LicenseController {
     type: UpdateLicenseDto,
     description: 'Active license token',
   })
-  @Auth([RoleType.ADMIN, RoleType.ROOT])
+  @Auth([RoleType.ADMIN])
   async activeLicenseToken(
     @Body() updateLicense: UpdateLicenseDto,
     @AuthUser() user: UserEntity,
@@ -73,14 +73,14 @@ export class LicenseController {
 
       if (data === HttpStatus.CONFLICT) {
         return {
-          code: HttpStatus.CONFLICT,
+          code: '4004',
           data: [],
           message: 'License is active',
         };
       }
 
       return {
-        code: HttpStatus.OK,
+        code: '2000',
         data,
         message: 'Active license successful',
       };
@@ -88,7 +88,7 @@ export class LicenseController {
       this.loggerService.error(`License controller func activeLicenseToken error ${error}`);
 
       return {
-        code: HttpStatus.INTERNAL_SERVER_ERROR,
+        code: '5000',
         data: [],
         message: 'Server error unknown',
       };
@@ -106,7 +106,7 @@ export class LicenseController {
     type: SearchLicenseDto,
     enum: [1, 2],
   })
-  @Auth([RoleType.ADMIN, RoleType.ROOT])
+  @Auth([RoleType.ADMIN])
   async findAll(@Body() searchLicenseDto: SearchLicenseDto): Promise<ResponseDto<any>> {
     try {
       this.loggerService.info('LicenseController execute func findAll');
@@ -114,18 +114,15 @@ export class LicenseController {
       const data = await this.licenseService.findAll(searchLicenseDto);
 
       return {
-        code: HttpStatus.OK,
-        data: {
-          list: data,
-          total: data.length,
-        },
+        code: '2000',
+        data,
         message: 'Get all license successful',
       };
     } catch (error) {
       this.loggerService.error(`License controller func findAll error ${error}`);
 
       return {
-        code: HttpStatus.INTERNAL_SERVER_ERROR,
+        code: '5000',
         data: [],
         message: 'Server error unknown',
       };
@@ -135,10 +132,10 @@ export class LicenseController {
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({
-    type: UpdateLicenseDto,
-    description: 'Get all license token',
+    type: LicenseDto,
+    description: 'Get license with licenseId',
   })
-  @Auth([RoleType.ADMIN, RoleType.ROOT])
+  @Auth([RoleType.ADMIN])
   async findOne(@Param('id') id: Uuid): Promise<ResponseDto<any>> {
     try {
       this.loggerService.info('LicenseController execute func findOne');
@@ -147,7 +144,7 @@ export class LicenseController {
       const data = result === undefined ? [] : result;
 
       return {
-        code: HttpStatus.OK,
+        code: '2000',
         data,
         message: 'Get license successful',
       };
@@ -155,7 +152,7 @@ export class LicenseController {
       this.loggerService.error(`License controller func findOne error ${error}`);
 
       return {
-        code: HttpStatus.INTERNAL_SERVER_ERROR,
+        code: '2000',
         data: [],
         message: 'Server error unknown',
       };

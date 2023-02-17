@@ -21,11 +21,13 @@ import type { UsersPageOptionsDto } from './dtos/users-page-options.dto';
 import type { UserEntity } from './user.entity';
 import { UserRepository } from './user.repository';
 import type { UserSettingsEntity } from './user-settings.entity';
+import { UserSettingsRepository } from './user-settings.repository';
 
 @Injectable()
 export class UserService {
   constructor(
     private userRepository: UserRepository,
+    private userSettingsRepository: UserSettingsRepository,
     private validatorService: ValidatorService,
     // private awsS3Service: AwsS3Service,
     private apiConfigService: ApiConfigService,
@@ -56,7 +58,19 @@ export class UserService {
       });
     }
 
-    return queryBuilder.getOne();
+    const user = await queryBuilder.getOne();
+
+    if (!user) {
+      return user!;
+    }
+
+    if (user.settings?.isEmailVerified === true) {
+      return user;
+    }
+
+    if (user.settings?.isPhoneVerified === true) {
+      return user;
+    }
   }
 
   @Transactional()
@@ -102,14 +116,22 @@ export class UserService {
 
     const user = this.userRepository.create({
       firstName: 'Supper',
-      lastName: 'System',
-      role: RoleType.ROOT,
+      lastName: 'Admin',
+      role: RoleType.ADMIN,
       password: createRootDto.password,
       username: createRootDto.username,
       phone: createRootDto.phone,
     });
 
     await this.userRepository.save(user);
+
+    user.settings = await this.createSettings(
+      user.id,
+      plainToClass(CreateSettingsDto, {
+        isEmailVerified: false,
+        isPhoneVerified: false,
+      }),
+    );
 
     return user;
   }
@@ -139,5 +161,23 @@ export class UserService {
     return this.commandBus.execute<CreateSettingsCommand, UserSettingsEntity>(
       new CreateSettingsCommand(userId, createSettingsDto),
     );
+  }
+
+  async validateUserSettings(userId: Uuid): Promise<any> {
+    const record = await this.userSettingsRepository.findOne({ where: { userId } });
+
+    if (!record) {
+      throw new Error('User settings not found!');
+    }
+
+    if (record.isEmailVerified !== true) {
+      return { isEmailVerified: false };
+    }
+
+    if (record.isPhoneVerified !== true) {
+      return { isPhoneVerified: false };
+    }
+
+    return false;
   }
 }

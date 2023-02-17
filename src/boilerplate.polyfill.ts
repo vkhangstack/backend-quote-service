@@ -75,7 +75,9 @@ declare module 'typeorm' {
   }
 }
 
-Array.prototype.toDtos = function <Entity extends AbstractEntity<Dto>, Dto extends AbstractDto>(options?: unknown): Dto[] {
+Array.prototype.toDtos = function <Entity extends AbstractEntity<Dto>, Dto extends AbstractDto>(
+  options?: unknown,
+): Dto[] {
   return compact(map<Entity, Dto>(this as Entity[], (item) => item.toDto(options as never)));
 };
 
@@ -101,7 +103,10 @@ QueryBuilder.prototype.searchByString = function (q, columnNames) {
   return this;
 };
 
-SelectQueryBuilder.prototype.paginate = async function (pageOptionsDto: PageOptionsDto, options?: Partial<{ takeAll: boolean }>) {
+SelectQueryBuilder.prototype.paginate = async function (
+  pageOptionsDto: PageOptionsDto,
+  options?: Partial<{ takeAll: boolean }>,
+) {
   if (options?.takeAll) {
     this.skip(pageOptionsDto.skip).take(pageOptionsDto.take);
   }
