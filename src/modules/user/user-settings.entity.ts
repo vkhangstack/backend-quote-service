@@ -28,6 +28,9 @@ export class UserSettingsEntity extends AbstractEntity<UserDto, UserDtoOptions> 
   @Column({ type: 'uuid' })
   userId?: string;
 
+  @Column({ type: 'character varying' })
+  isStatus?: string;
+
   @OneToOne(() => UserEntity, (user) => user.settings, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',

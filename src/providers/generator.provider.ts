@@ -61,4 +61,20 @@ export class GeneratorProvider {
       .replace(/[^\dA-Za-z]+/g, '')
       .slice(0, Math.max(0, length));
   }
+
+  /**
+   * generate random number
+   * @param min
+   * @param max
+   */
+  static generateRandomNumber(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  /**
+   * generate random with  length 6
+   */
+  static generateCode(): string {
+    return Math.floor(100_000 + Math.random() * 900_000).toString();
+  }
 }

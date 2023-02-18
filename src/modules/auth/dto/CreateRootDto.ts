@@ -17,6 +17,9 @@ export class CreateRootDto {
   readonly username: string;
 
   @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  @Trim()
   readonly email: string;
 
   @ApiProperty({ minLength: 6 })

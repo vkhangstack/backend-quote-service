@@ -6,6 +6,7 @@ import type { RoleType } from '../../constants';
 import { TokenType } from '../../constants';
 import { ApiConfigService } from '../../shared/services/api-config.service';
 import type { UserEntity } from '../user/user.entity';
+import { StatusUser } from '../user/user.enum';
 import { UserService } from '../user/user.service';
 import { TokenPayloadDto } from './dto/TokenPayloadDto';
 import type { UserLoginDto } from './dto/UserLoginDto';
@@ -44,7 +45,14 @@ export class AuthService {
     });
 
     if (!user) {
-      return false;
+      return user!;
+    }
+
+    if (
+      (user.settings?.isEmailVerified === true && user.settings?.isStatus === StatusUser.ACTIVE) ||
+      (user.settings?.isPhoneVerified === true && user.settings?.isStatus === StatusUser.ACTIVE)
+    ) {
+      return user;
     }
 
     const isPasswordValid = await validateHash(userLoginDto.password, user?.password);
@@ -52,7 +60,5 @@ export class AuthService {
     if (!isPasswordValid) {
       return false;
     }
-
-    return user;
   }
 }

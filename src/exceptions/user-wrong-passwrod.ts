@@ -1,11 +1,13 @@
-import { HttpStatus, NotFoundException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
+
+import { AuthEnum, MessageAuthEnum } from '../modules/auth/auth.enum';
 
 export class UserWrongPassword extends NotFoundException {
   constructor() {
     super({
-      code: HttpStatus.INTERNAL_SERVER_ERROR,
+      code: AuthEnum.LOGIN_FAILURE,
       data: [],
-      message: 'Wrong password',
+      message: MessageAuthEnum.LOGIN_FAILURE,
     });
   }
 }

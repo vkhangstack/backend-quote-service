@@ -19,6 +19,7 @@ import { CreateSettingsDto } from './dtos/create-settings.dto';
 import type { UserDto } from './dtos/user.dto';
 import type { UsersPageOptionsDto } from './dtos/users-page-options.dto';
 import type { UserEntity } from './user.entity';
+import { StatusUser } from './user.enum';
 import { UserRepository } from './user.repository';
 import type { UserSettingsEntity } from './user-settings.entity';
 import { UserSettingsRepository } from './user-settings.repository';
@@ -41,7 +42,9 @@ export class UserService {
     return this.userRepository.findOne(findData);
   }
 
-  async findByUsernameOrEmail(options: Partial<{ username: string; email: string }>): Promise<Optional<UserEntity>> {
+  async findByUsernameOrEmail(
+    options: Partial<{ username: string; email: string; phone: string }>,
+  ): Promise<Optional<UserEntity>> {
     const queryBuilder = this.userRepository
       .createQueryBuilder('user')
       .leftJoinAndSelect<UserEntity, 'user'>('user.settings', 'settings');
@@ -58,19 +61,19 @@ export class UserService {
       });
     }
 
+    if (options.phone) {
+      queryBuilder.orWhere('user.phone = :phone', {
+        username: options.username,
+      });
+    }
+
     const user = await queryBuilder.getOne();
 
-    if (!user) {
-      return user!;
-    }
-
-    if (user.settings?.isEmailVerified === true) {
+    if (user) {
       return user;
     }
 
-    if (user.settings?.isPhoneVerified === true) {
-      return user;
-    }
+    return user!;
   }
 
   @Transactional()
@@ -85,7 +88,7 @@ export class UserService {
 
     // if (file) {
     //   user.avatar = await this.awsS3Service.uploadImage(file);
-    // }
+    // }s
 
     await this.userRepository.save(user);
 
@@ -94,6 +97,7 @@ export class UserService {
       plainToClass(CreateSettingsDto, {
         isEmailVerified: false,
         isPhoneVerified: false,
+        isStatus: StatusUser.INACTIVE,
       }),
     );
 
@@ -118,6 +122,7 @@ export class UserService {
       firstName: 'Supper',
       lastName: 'Admin',
       role: RoleType.ADMIN,
+      email: createRootDto.email,
       password: createRootDto.password,
       username: createRootDto.username,
       phone: createRootDto.phone,
@@ -130,6 +135,7 @@ export class UserService {
       plainToClass(CreateSettingsDto, {
         isEmailVerified: false,
         isPhoneVerified: false,
+        isStatus: StatusUser.INACTIVE,
       }),
     );
 

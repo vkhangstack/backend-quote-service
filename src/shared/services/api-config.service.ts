@@ -149,6 +149,25 @@ export class ApiConfigService {
     };
   }
 
+  get mailerConfig() {
+    return {
+      config: {
+        transport: {
+          host: this.getString('MAILER_HOST'),
+          port: this.getNumber('MAILER_PORT'),
+          secure: this.getBoolean('MAILER_SECURE'),
+          auth: {
+            user: this.getString('MAILER_USERNAME'),
+            pass: this.getString('MAILER_PASSWORD'),
+          },
+          defaults: {
+            from: this.getString('MAILER_FROM'),
+          },
+        },
+      },
+    };
+  }
+
   private get(key: string): string {
     const value = this.configService.get<string>(key);
 
