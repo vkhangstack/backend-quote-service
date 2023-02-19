@@ -15,3 +15,8 @@ export enum MessageAuthEnum {
   GET_USER_SUCCESS = 'Get user info success',
   CREATE_USER_SUCCESS = 'Register user successful',
 }
+
+export enum IsDelete {
+  DELETED = 2,
+  NOT_DELETED = 1,
+}

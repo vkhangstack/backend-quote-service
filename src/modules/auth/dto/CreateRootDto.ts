@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { IsNotEmpty, IsPhoneNumber, IsString, MinLength, ValidateIf } from 'class-validator';
 
 import { Trim } from '../../../decorators/transform.decorators';
 
@@ -28,5 +28,8 @@ export class CreateRootDto {
   readonly password: string;
 
   @ApiProperty()
+  @ValidateIf((o) => 'phone' in o)
+  @IsNotEmpty()
+  @IsPhoneNumber()
   phone: string;
 }

@@ -15,7 +15,8 @@ export class CreateTableOtp1676730204272 implements MigrationInterface {
           "user_id"    character varying NOT NULL,
           "code"       character varying NOT NULL,
           "is_status"    numeric,
-          "expires_at"  TIMESTAMP,
+          "is_channel"   character varying NOT NULL,
+          "expired_at"  TIMESTAMP,
           CONSTRAINT "PK_a3f2b1c2c241659fc62907c74" PRIMARY KEY ("id")
         )`);
   }

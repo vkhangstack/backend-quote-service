@@ -20,6 +20,8 @@ export class CreateUsersTable1622299665807 implements MigrationInterface {
         "phone"      character varying,
         "avatar"     character varying,
         CONSTRAINT "UQ_97672ac88f789774dd47f7c8be3" UNIQUE ("email"),
+        CONSTRAINT "UQ_97672ac88f789774dd2727c2be3" UNIQUE ("username"),
+        CONSTRAINT "UQ_9767212a8f789774dd2727c2be3" UNIQUE ("phone"),
         CONSTRAINT "PK_a3ffb1c0c8416b9fc6f907b7433" PRIMARY KEY ("id")
       )`);
   }

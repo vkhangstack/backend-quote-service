@@ -5,7 +5,7 @@ export class VerifyOtpDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  userId: Uuid;
+  otpId: Uuid;
 
   @ApiProperty()
   @IsNotEmpty()

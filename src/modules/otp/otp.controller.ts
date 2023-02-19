@@ -27,19 +27,19 @@ export class OtpController {
 
       if (!isOtp) {
         return {
-          code: ServerCode.ERROR,
-          data: isOtp,
-          message: MessageServerCode.ERROR,
+          code: OtpCode.VERIFY_CODE_FAIL,
+          data: [],
+          message: OtpCode.VERIFY_CODE_FAIL,
         };
       }
 
       return {
         code: OtpCode.VERIFY_CODE_SUCCESS,
-        data: isOtp,
+        data: [],
         message: OtpCode.VERIFY_CODE_SUCCESS,
       };
     } catch (error) {
-      this.loggerService.error('createRoot error', error);
+      this.loggerService.error('verifyOtp error', error);
 
       return {
         code: ServerCode.ERROR,

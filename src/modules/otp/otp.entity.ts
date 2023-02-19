@@ -9,7 +9,9 @@ export interface IOtpEntity extends IAbstractEntity<OtpDto> {
   updatedBy?: string;
   userId: Uuid;
   code: string;
-  isStatus: number;
+  isStatus: string;
+  isChannel: string;
+  expiredAt: number;
 }
 
 @Entity({ name: 'otp_codes' })
@@ -27,5 +29,11 @@ export class OtpEntity extends AbstractEntity<OtpDto> implements IOtpEntity {
   code: string;
 
   @Column({ nullable: false })
-  isStatus: number;
+  isStatus: string;
+
+  @Column({ nullable: false })
+  isChannel: string;
+
+  @Column({ nullable: false })
+  expiredAt: number;
 }

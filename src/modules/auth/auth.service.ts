@@ -8,6 +8,7 @@ import { ApiConfigService } from '../../shared/services/api-config.service';
 import type { UserEntity } from '../user/user.entity';
 import { StatusUser } from '../user/user.enum';
 import { UserService } from '../user/user.service';
+import { IsDelete } from './auth.enum';
 import { TokenPayloadDto } from './dto/TokenPayloadDto';
 import type { UserLoginDto } from './dto/UserLoginDto';
 
@@ -42,6 +43,7 @@ export class AuthService {
     const user = await this.userService.findByUsernameOrEmail({
       username: userLoginDto.username,
       email: userLoginDto.email,
+      isDelete: IsDelete.NOT_DELETED,
     });
 
     if (!user) {
@@ -56,6 +58,12 @@ export class AuthService {
     }
 
     const isPasswordValid = await validateHash(userLoginDto.password, user?.password);
+
+    // if (user.role !== RoleType.ADMIN) {
+    //   return {
+    //     needOtp: true,
+    //   };
+    // }
 
     if (!isPasswordValid) {
       return false;

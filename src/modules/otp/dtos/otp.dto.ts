@@ -17,7 +17,10 @@ export class OtpDto extends AbstractDto {
   code: string;
 
   @ApiProperty()
-  isStatus?: number;
+  isStatus?: string;
+
+  @ApiProperty()
+  expiredAt: number;
 
   constructor(otp: OtpEntity) {
     super(otp);
@@ -26,5 +29,6 @@ export class OtpDto extends AbstractDto {
     this.userId = otp.userId;
     this.code = otp.code;
     this.isStatus = otp.isStatus;
+    this.expiredAt = otp.expiredAt;
   }
 }

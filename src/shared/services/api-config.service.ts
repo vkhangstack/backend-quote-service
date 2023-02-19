@@ -168,6 +168,12 @@ export class ApiConfigService {
     };
   }
 
+  get otpConfig() {
+    return {
+      expireIn: this.getNumber('OTP_TIMEOUT'),
+    };
+  }
+
   private get(key: string): string {
     const value = this.configService.get<string>(key);
 

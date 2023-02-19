@@ -43,7 +43,7 @@ export class UserService {
   }
 
   async findByUsernameOrEmail(
-    options: Partial<{ username: string; email: string; phone: string }>,
+    options: Partial<{ username: string; email: string; phone: string; isDelete: number }>,
   ): Promise<Optional<UserEntity>> {
     const queryBuilder = this.userRepository
       .createQueryBuilder('user')
@@ -64,6 +64,12 @@ export class UserService {
     if (options.phone) {
       queryBuilder.orWhere('user.phone = :phone', {
         username: options.username,
+      });
+    }
+
+    if (options.isDelete) {
+      queryBuilder.andWhere('settings.is_delete = :isDelete', {
+        isDelete: options.isDelete,
       });
     }
 
