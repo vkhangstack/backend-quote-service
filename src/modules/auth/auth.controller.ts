@@ -190,9 +190,9 @@ export class AuthController {
       this.loggerService.error('AuthController execute func getCurrentUser error', error);
 
       return {
-        code: '5000',
+        code: ServerCode.ERROR,
         data: [],
-        message: 'Server error unknown',
+        message: MessageServerCode.ERROR,
       };
     }
   }
