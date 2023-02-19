@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, HttpStatus, Inject, Put } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Inject, Post } from '@nestjs/common';
 import { ApiOkResponse } from '@nestjs/swagger';
 import { Logger } from 'winston';
 
@@ -17,7 +17,7 @@ export class OtpController {
     private loggerService: Logger,
   ) {}
 
-  @Put('/verify')
+  @Post('/verify')
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse()
   async verifyOtp(@Body() otpDto: VerifyOtpDto): Promise<ResponseDto<any> | ResponseDto<string[]>> {
@@ -26,6 +26,8 @@ export class OtpController {
       const isOtp = await this.otpService.checkOtp(otpDto);
 
       if (!isOtp) {
+        this.loggerService.error('verifyOtp checkOtp failed');
+
         return {
           code: OtpCode.VERIFY_CODE_FAIL,
           data: [],
