@@ -10,10 +10,12 @@ export enum AuthEnum {
 }
 
 export enum MessageAuthEnum {
-  LOGIN_SUCCESS = 'Login Success',
-  LOGIN_FAILURE = 'Login wrong password or username',
-  GET_USER_SUCCESS = 'Get user info success',
-  CREATE_USER_SUCCESS = 'Register user successful',
+  LOGIN_SUCCESS = 'Login Success!',
+  LOGIN_FAILURE = 'Login wrong password or username!',
+  GET_USER_SUCCESS = 'Get user info success!',
+  CREATE_USER_SUCCESS = 'Register user successful!',
+  CREATE_ADMIN_SUCCESS = 'Create admin success!',
+  CREATE_ADMIN_FAILURE = 'Create admin fail!',
 }
 
 export enum IsDelete {

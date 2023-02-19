@@ -1,7 +1,7 @@
 import type { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class CreateUsersTable1622299665807 implements MigrationInterface {
-  name = 'createUsersTable1622299665807';
+  name = 'CreateUsersTable1622299665807';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query("CREATE TYPE \"users_role_enum\" AS ENUM('USER', 'ADMIN')");

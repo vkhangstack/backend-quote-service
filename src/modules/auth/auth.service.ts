@@ -50,15 +50,14 @@ export class AuthService {
       return user!;
     }
 
+    const isPasswordValid = await validateHash(userLoginDto.password, user?.password);
+
     if (
-      (user.settings?.isEmailVerified === true && user.settings?.isStatus === StatusUser.ACTIVE) ||
-      (user.settings?.isPhoneVerified === true && user.settings?.isStatus === StatusUser.ACTIVE)
+      (isPasswordValid && user.settings?.isEmailVerified && user.settings?.isStatus === StatusUser.ACTIVE) ||
+      (isPasswordValid && user.settings?.isPhoneVerified && user.settings?.isStatus === StatusUser.ACTIVE)
     ) {
       return user;
     }
-
-    const isPasswordValid = await validateHash(userLoginDto.password, user?.password);
-
     // if (user.role !== RoleType.ADMIN) {
     //   return {
     //     needOtp: true,

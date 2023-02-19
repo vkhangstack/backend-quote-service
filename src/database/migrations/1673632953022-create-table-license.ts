@@ -1,7 +1,7 @@
 import type { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class CreateTableLicense1673632953022 implements MigrationInterface {
-  name = 'createLicenseTable1622299662707';
+  name = 'CreateTableLicense1673632953022';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`

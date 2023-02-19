@@ -27,7 +27,7 @@ export class OtpService {
       isStatus: OtpStatus.CREATED,
       createdBy: 'system',
       createdAt: new Date(),
-      expiredAt: Date.now() + this.configService.otpConfig.expireIn,
+      expiredAt: Date.now() + Number(this.configService.otpConfig.expireIn),
     });
 
     if (user?.email) {
