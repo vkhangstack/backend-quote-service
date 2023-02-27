@@ -192,4 +192,10 @@ export class UserService {
 
     return false;
   }
+
+  //   async insertLastLogin(userId: Uuid): Promise<void> {
+  //     console.log('dx', userId);
+  //     await this.userRepository.update({ id: userId }, { lastLogin: new Date() });
+  //     console.log('dx2');
+  //   }
 }

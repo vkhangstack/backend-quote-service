@@ -10,10 +10,7 @@ import { GeneratorService } from './generator.service';
 export class AwsS3Service {
   private readonly s3: AWS.S3;
 
-  constructor(
-    public configService: ApiConfigService,
-    public generatorService: GeneratorService,
-  ) {
+  constructor(public configService: ApiConfigService, public generatorService: GeneratorService) {
     const awsS3Config = configService.awsS3Config;
 
     const options: AWS.S3.Types.ClientConfiguration = {
@@ -25,9 +22,7 @@ export class AwsS3Service {
   }
 
   async uploadImage(file: IFile): Promise<string> {
-    const fileName = this.generatorService.fileName(
-      <string>mime.extension(file.mimetype),
-    );
+    const fileName = this.generatorService.fileName(<string>mime.extension(file.mimetype));
     const key = 'images/' + fileName;
     await this.s3
       .putObject({

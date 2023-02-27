@@ -5,7 +5,6 @@ import { validateHash } from '../../common/utils';
 import type { RoleType } from '../../constants';
 import { TokenType } from '../../constants';
 import { ApiConfigService } from '../../shared/services/api-config.service';
-import type { UserEntity } from '../user/user.entity';
 import { StatusUser } from '../user/user.enum';
 import { UserService } from '../user/user.service';
 import { IsDelete } from './auth.enum';
@@ -39,7 +38,7 @@ export class AuthService {
     });
   }
 
-  async validateUser(userLoginDto: UserLoginDto): Promise<UserEntity | any> {
+  async validateUser(userLoginDto: UserLoginDto): Promise<any> {
     const user = await this.userService.findByUsernameOrEmail({
       username: userLoginDto.username,
       email: userLoginDto.email,
@@ -58,14 +57,13 @@ export class AuthService {
     ) {
       return user;
     }
+
     // if (user.role !== RoleType.ADMIN) {
     //   return {
     //     needOtp: true,
     //   };
     // }
 
-    if (!isPasswordValid) {
-      return false;
-    }
+    return false;
   }
 }
