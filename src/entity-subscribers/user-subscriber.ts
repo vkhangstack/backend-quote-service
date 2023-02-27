@@ -1,4 +1,4 @@
-import type { EntitySubscriberInterface, InsertEvent, UpdateEvent } from 'typeorm';
+import type { EntitySubscriberInterface, InsertEvent } from 'typeorm';
 import { EventSubscriber } from 'typeorm';
 
 import { generateHash } from '../common/utils';
@@ -16,13 +16,13 @@ export class UserSubscriber implements EntitySubscriberInterface<UserEntity> {
     }
   }
 
-  beforeUpdate(event: UpdateEvent<UserEntity>): void {
-    // FIXME check event.databaseEntity.password
+  //   beforeUpdate(event: UpdateEvent<UserEntity>): void {
+  //     // FIXME check event.databaseEntity.password
 
-    const entity = event.entity as UserEntity;
+  //     const entity = event.entity as UserEntity;
 
-    if (entity.password !== event.databaseEntity.password) {
-      entity.password = generateHash(entity.password!);
-    }
-  }
+  //     if (entity.password !== event.databaseEntity.password) {
+  //       entity.password = generateHash(entity.password!);
+  //     }
+  //   }
 }

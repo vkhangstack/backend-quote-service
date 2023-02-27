@@ -38,7 +38,7 @@ export class AuthController {
   @Post('createRoot')
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({
-    type: LoginPayloadDto,
+    type: CreateRootDto,
     description: 'Create account root with key app generate',
   })
   async createRoot(@Body() createRoot: CreateRootDto): Promise<ResponseDto<{ otpId: string }> | ResponseDto<string[]>> {
@@ -92,7 +92,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({
     type: LoginPayloadDto,
-    description: 'User info with access token',
+    description: 'Login account with username or email or phone and password',
   })
   @ApiException(() => [UserNotFoundException])
   async login(@Body() userLoginDto: UserLoginDto): Promise<ResponseDto<LoginPayloadDto> | ResponseDto<string[]>> {
@@ -133,7 +133,7 @@ export class AuthController {
 
   @Post('register')
   @HttpCode(HttpStatus.OK)
-  @ApiOkResponse({ type: UserDto, description: 'Successfully Registered' })
+  @ApiOkResponse({ type: UserRegisterDto, description: 'Successfully Registered' })
   @ApiFile({ name: 'avatar' })
   async userRegister(
     @Body() userRegisterDto: UserRegisterDto,

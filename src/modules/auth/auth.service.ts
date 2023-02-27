@@ -55,6 +55,8 @@ export class AuthService {
       (isPasswordValid && user.settings?.isEmailVerified && user.settings?.isStatus === StatusUser.ACTIVE) ||
       (isPasswordValid && user.settings?.isPhoneVerified && user.settings?.isStatus === StatusUser.ACTIVE)
     ) {
+      await this.userService.insertLastLogin(user.id);
+
       return user;
     }
 
