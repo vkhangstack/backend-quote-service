@@ -153,13 +153,23 @@ export class ApiConfigService {
     return {
       config: {
         transport: {
-          host: this.getString('MAILER_HOST'),
-          port: this.getNumber('MAILER_PORT'),
-          secure: this.getBoolean('MAILER_SECURE'),
+          service: 'gmail',
           auth: {
             user: this.getString('MAILER_USERNAME'),
             pass: this.getString('MAILER_PASSWORD'),
           },
+          // },
+
+          // transport: {
+          //   service: 'gmail',
+          //   requireTLS: true,
+          //   host: this.getString('MAILER_HOST'),
+          //   port: this.getNumber('MAILER_PORT'),
+          //   secure: this.getBoolean('MAILER_SECURE'),
+          //   auth: {
+          //     user: this.getString('MAILER_USERNAME'),
+          //     pass: this.getString('MAILER_PASSWORD'),
+          //   },
           defaults: {
             from: this.getString('MAILER_FROM'),
           },

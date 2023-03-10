@@ -9,8 +9,8 @@ export class MailerController {
   @Post('/check')
   async getHello() {
     const send = await this.mailerService.checkServiceMailer(
+      'quotes.service.hcm@gmail.com',
       'khangdev@yopmail.com',
-      'khangdev@example.com',
       'Hello Khang Dev',
       'Hello Khang',
       '<h1>By Pham Van Khang</h1>',

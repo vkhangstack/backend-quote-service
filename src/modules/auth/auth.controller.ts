@@ -53,7 +53,7 @@ export class AuthController {
       // send email
       if (otpCode?.isChannel === OtpChannel.EMAIL) {
         await this.mailerService.sendMail({
-          from: 'system@example.com',
+          from: 'quotes.service.hcm@gmail.com',
           to: `${createdUser.email}`,
           subject: 'Request create user admin',
           text: `Hello ${createdUser.firstName} ${createdUser.lastName},
