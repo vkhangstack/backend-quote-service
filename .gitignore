@@ -81,3 +81,8 @@ db-data
 .temp
 .cache
 tsconfig.build.tsbuildinfo
+
+# build
+dist.tar
+app
+app.tar

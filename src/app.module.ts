@@ -63,7 +63,7 @@ import { SharedModule } from './shared/shared.module';
             filename: 'debug.log',
             level: 'debug',
             maxsize: 500_000,
-            maxFiles: 90,
+            maxFiles: 30,
           }),
           new transports.File({
             dirname: path.join(__dirname, './../logs/error/'),
