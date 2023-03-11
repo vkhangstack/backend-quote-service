@@ -1,8 +1,4 @@
-import type {
-  CallHandler,
-  ExecutionContext,
-  NestInterceptor,
-} from '@nestjs/common';
+import type { CallHandler, ExecutionContext, NestInterceptor } from '@nestjs/common';
 import { Injectable, UseInterceptors } from '@nestjs/common';
 import type { Observable } from 'rxjs';
 
@@ -11,10 +7,7 @@ import { ContextProvider } from '../providers';
 
 @Injectable()
 export class LanguageInterceptor implements NestInterceptor {
-  intercept(
-    context: ExecutionContext,
-    next: CallHandler,
-  ): Observable<undefined> {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<undefined> {
     const request = context.switchToHttp().getRequest();
     const language: LanguageCode = request.headers['x-language']?.toUpperCase();
 

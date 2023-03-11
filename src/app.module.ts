@@ -12,6 +12,8 @@ import { format, transports } from 'winston';
 import { AuthModule } from './modules/auth/auth.module';
 import { HealthCheckerModule } from './modules/health-checker/health-checker.module';
 import { LicenseModule } from './modules/license/license.module';
+import { MailerModule } from './modules/mailer/mailer.module';
+import { OtpModule } from './modules/otp/otp.module';
 // import { PostModule } from './modules/post/post.module';
 import { QuotesModule } from './modules/quotes/quotes.module';
 import { UserModule } from './modules/user/user.module';
@@ -22,9 +24,10 @@ import { SharedModule } from './shared/shared.module';
   imports: [
     AuthModule,
     UserModule,
-    // PostModule,
+    MailerModule,
     LicenseModule,
     QuotesModule,
+    OtpModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
@@ -53,29 +56,29 @@ import { SharedModule } from './shared/shared.module';
         transports: [
           new transports.Console({
             level: 'debug',
-            format: format.combine(format.json({ space: 2 }), format.metadata()),
+            format: format.combine(format.json(), format.metadata()),
           }),
-          new transports.File({
-            dirname: path.join(__dirname, './../logs/debug/'),
-            filename: 'debug.log',
-            level: 'debug',
-            maxsize: 500_000,
-            maxFiles: 90,
-          }),
-          new transports.File({
-            dirname: path.join(__dirname, './../logs/error/'),
-            filename: 'error.log',
-            level: 'error',
-            maxsize: 500_000,
-            maxFiles: 30,
-          }),
-          new transports.File({
-            dirname: path.join(__dirname, './../logs/info/'),
-            filename: 'info.log',
-            maxsize: 500_000,
-            level: 'info',
-            maxFiles: 30,
-          }),
+          //   new transports.File({
+          //     dirname: path.join(__dirname, './../logs/debug/'),
+          //     filename: 'debug.log',
+          //     level: 'debug',
+          //     maxsize: 500_000,
+          //     maxFiles: 30,
+          //   }),
+          //   new transports.File({
+          //     dirname: path.join(__dirname, './../logs/error/'),
+          //     filename: 'error.log',
+          //     level: 'error',
+          //     maxsize: 500_000,
+          //     maxFiles: 30,
+          //   }),
+          //   new transports.File({
+          //     dirname: path.join(__dirname, './../logs/info/'),
+          //     filename: 'info.log',
+          //     maxsize: 500_000,
+          //     level: 'info',
+          //     maxFiles: 30,
+          //   }),
           new transports.MongoDB({
             level: 'debug',
             db: configService.mongoConfig.uri,
@@ -110,5 +113,6 @@ import { SharedModule } from './shared/shared.module';
       inject: [ApiConfigService],
     }),
   ],
+  providers: [],
 })
 export class AppModule {}

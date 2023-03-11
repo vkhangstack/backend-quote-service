@@ -6,7 +6,7 @@ import type { AbstractDto } from './dto/abstract.dto';
 export interface IAbstractEntity<DTO extends AbstractDto, O = never> {
   id: Uuid;
   createdAt: Date;
-  updatedAt: Date;
+  updatedAt?: Date;
 
   toDto(options?: O): DTO;
 }

@@ -23,28 +23,20 @@ export class PostService {
 
   @Transactional()
   createPost(userId: Uuid, createPostDto: CreatePostDto): Promise<PostEntity> {
-    return this.commandBus.execute<CreatePostCommand, PostEntity>(
-      new CreatePostCommand(userId, createPostDto),
-    );
+    return this.commandBus.execute<CreatePostCommand, PostEntity>(new CreatePostCommand(userId, createPostDto));
   }
 
-  async getAllPost(
-    postPageOptionsDto: PostPageOptionsDto,
-  ): Promise<PageDto<PostDto>> {
+  async getAllPost(postPageOptionsDto: PostPageOptionsDto): Promise<PageDto<PostDto>> {
     const queryBuilder = this.postRepository
       .createQueryBuilder('post')
       .leftJoinAndSelect('post.translations', 'postTranslation');
-    const [items, pageMetaDto] = await queryBuilder.paginate(
-      postPageOptionsDto,
-    );
+    const [items, pageMetaDto] = await queryBuilder.paginate(postPageOptionsDto);
 
     return items.toPageDto(pageMetaDto);
   }
 
   async getSinglePost(id: Uuid): Promise<PostEntity> {
-    const queryBuilder = this.postRepository
-      .createQueryBuilder('post')
-      .where('post.id = :id', { id });
+    const queryBuilder = this.postRepository.createQueryBuilder('post').where('post.id = :id', { id });
 
     const postEntity = await queryBuilder.getOne();
 
@@ -56,9 +48,7 @@ export class PostService {
   }
 
   async updatePost(id: Uuid, updatePostDto: UpdatePostDto): Promise<void> {
-    const queryBuilder = this.postRepository
-      .createQueryBuilder('post')
-      .where('post.id = :id', { id });
+    const queryBuilder = this.postRepository.createQueryBuilder('post').where('post.id = :id', { id });
 
     const postEntity = await queryBuilder.getOne();
 
@@ -72,9 +62,7 @@ export class PostService {
   }
 
   async deletePost(id: Uuid): Promise<void> {
-    const queryBuilder = this.postRepository
-      .createQueryBuilder('post')
-      .where('post.id = :id', { id });
+    const queryBuilder = this.postRepository.createQueryBuilder('post').where('post.id = :id', { id });
 
     const postEntity = await queryBuilder.getOne();
 

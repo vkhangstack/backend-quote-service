@@ -1,4 +1,4 @@
-import { BooleanFieldOptional } from '../../../decorators';
+import { BooleanFieldOptional, StringField } from '../../../decorators';
 
 export class CreateSettingsDto {
   @BooleanFieldOptional()
@@ -6,4 +6,7 @@ export class CreateSettingsDto {
 
   @BooleanFieldOptional()
   isPhoneVerified: boolean;
+
+  @StringField()
+  isStatus: string;
 }

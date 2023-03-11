@@ -149,6 +149,41 @@ export class ApiConfigService {
     };
   }
 
+  get mailerConfig() {
+    return {
+      config: {
+        transport: {
+          service: 'gmail',
+          auth: {
+            user: this.getString('MAILER_USERNAME'),
+            pass: this.getString('MAILER_PASSWORD'),
+          },
+          // },
+
+          // transport: {
+          //   service: 'gmail',
+          //   requireTLS: true,
+          //   host: this.getString('MAILER_HOST'),
+          //   port: this.getNumber('MAILER_PORT'),
+          //   secure: this.getBoolean('MAILER_SECURE'),
+          //   auth: {
+          //     user: this.getString('MAILER_USERNAME'),
+          //     pass: this.getString('MAILER_PASSWORD'),
+          //   },
+          defaults: {
+            from: this.getString('MAILER_FROM'),
+          },
+        },
+      },
+    };
+  }
+
+  get otpConfig() {
+    return {
+      expireIn: this.getNumber('OTP_TIMEOUT'),
+    };
+  }
+
   private get(key: string): string {
     const value = this.configService.get<string>(key);
 

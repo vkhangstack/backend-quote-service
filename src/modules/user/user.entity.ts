@@ -1,10 +1,10 @@
-import { Column, Entity, OneToMany, OneToOne } from 'typeorm';
+import { Column, Entity, OneToOne } from 'typeorm';
 
 import type { IAbstractEntity } from '../../common/abstract.entity';
 import { AbstractEntity } from '../../common/abstract.entity';
 import { RoleType } from '../../constants';
 import { UseDto, VirtualColumn } from '../../decorators';
-import { PostEntity } from '../post/post.entity';
+// import { PostEntity } from '../post/post.entity';
 import type { UserDtoOptions } from './dtos/user.dto';
 import { UserDto } from './dtos/user.dto';
 import type { IUserSettingsEntity } from './user-settings.entity';
@@ -27,6 +27,8 @@ export interface IUserEntity extends IAbstractEntity<UserDto> {
 
   fullName?: string;
 
+  lastLogin?: Date;
+
   username?: string;
 
   settings?: IUserSettingsEntity;
@@ -48,7 +50,7 @@ export class UserEntity extends AbstractEntity<UserDto, UserDtoOptions> implemen
   role: RoleType;
 
   @Column({ unique: true, nullable: true })
-  email?: string;
+  email: string;
 
   @Column({ nullable: true })
   password?: string;
@@ -59,12 +61,15 @@ export class UserEntity extends AbstractEntity<UserDto, UserDtoOptions> implemen
   @Column({ nullable: true })
   avatar?: string;
 
+  @Column({ nullable: true })
+  lastLogin?: Date;
+
   @VirtualColumn()
   fullName?: string;
 
   @OneToOne(() => UserSettingsEntity, (userSettings) => userSettings.user)
   settings?: UserSettingsEntity;
 
-  @OneToMany(() => PostEntity, (postEntity) => postEntity.user)
-  posts: PostEntity[];
+  //   @OneToMany(() => PostEntity, (postEntity) => postEntity.user)
+  //   posts: PostEntity[];
 }

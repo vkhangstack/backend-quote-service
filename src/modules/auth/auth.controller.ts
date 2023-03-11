@@ -5,9 +5,13 @@ import { Logger } from 'winston';
 
 import type { ResponseDto } from '../../common/dto/response.dto';
 import { RoleType } from '../../constants';
+import { MessageServerCode, ServerCode } from '../../constants/system.enum';
 import { ApiFile, Auth, AuthUser } from '../../decorators';
 import { UserNotFoundException } from '../../exceptions';
 import { IFile } from '../../interfaces';
+import { MailerService } from '../mailer/mailer.service';
+import { OtpChannel } from '../otp/otp.enum';
+import { OtpService } from '../otp/otp.service';
 import { UserDto } from '../user/dtos/user.dto';
 import { UserEntity } from '../user/user.entity';
 import { UserService } from '../user/user.service';
@@ -19,11 +23,13 @@ import { UserLoginDto } from './dto/UserLoginDto';
 import { UserRegisterDto } from './dto/UserRegisterDto';
 
 @Controller('auth')
-@ApiTags('auth')
+@ApiTags('authentication')
 export class AuthController {
   constructor(
     private userService: UserService,
     private authService: AuthService,
+    private mailerService: MailerService,
+    private otpService: OtpService,
 
     @Inject('winston')
     private loggerService: Logger,
@@ -32,29 +38,54 @@ export class AuthController {
   @Post('createRoot')
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({
-    type: LoginPayloadDto,
+    type: CreateRootDto,
     description: 'Create account root with key app generate',
   })
-  async createRoot(@Body() createRoot: CreateRootDto): Promise<ResponseDto<UserDto> | ResponseDto<string[]>> {
+  async createRoot(
+    @Body() createRoot: CreateRootDto,
+  ): Promise<ResponseDto<{ userId: string }> | ResponseDto<string[]>> {
     try {
       this.loggerService.info('Create root execute');
       this.loggerService.debug('createRoot receive body', createRoot);
       const createdUser = await this.userService.createRoot(createRoot);
 
+      //   create otp Code
+      const otpCode = await this.otpService.create(createdUser);
+
+      // send email
+      if (otpCode?.isChannel === OtpChannel.EMAIL) {
+        void this.mailerService.sendMailerService(
+          createdUser.email,
+          'Verify your email for app Quotes Service',
+          undefined,
+          `<h1>Hello ${createdUser.firstName} ${createdUser.lastName}.</h1>
+           <p>Follow this code to verify your email address.</p>
+           <p>OTP Code: <b>${otpCode.code}</b>  </p>
+           <p>If you didn’t ask to verify this address, you can ignore this email.</p>
+           Thanks, <br/>
+           Quotes Service Product Team
+          `,
+        );
+
+        return {
+          code: AuthEnum.CREATE_ADMIN_SUCCESS,
+          data: { userId: createdUser.id },
+          message: MessageAuthEnum.CREATE_ADMIN_SUCCESS,
+        };
+      }
+
       return {
-        code: AuthEnum.CREATE_ADMIN_SUCCESS,
-        data: createdUser.toDto({
-          isActive: false,
-        }),
-        message: 'Create root success!',
+        code: AuthEnum.CREATE_ADMIN_FAILURE,
+        data: [],
+        message: MessageAuthEnum.CREATE_ADMIN_FAILURE,
       };
     } catch (error) {
       this.loggerService.error('createRoot error', error);
 
       return {
-        code: AuthEnum.CREATE_ADMIN_FAILURE,
+        code: ServerCode.ERROR,
         data: [],
-        message: 'Server error unknown',
+        message: MessageServerCode.ERROR,
       };
     }
   }
@@ -63,7 +94,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({
     type: LoginPayloadDto,
-    description: 'User info with access token',
+    description: 'Login account with username or email or phone and password',
   })
   @ApiException(() => [UserNotFoundException])
   async login(@Body() userLoginDto: UserLoginDto): Promise<ResponseDto<LoginPayloadDto> | ResponseDto<string[]>> {
@@ -76,7 +107,7 @@ export class AuthController {
         return {
           code: AuthEnum.LOGIN_FAILURE,
           data: [],
-          message: MessageAuthEnum.LOGIN_4000,
+          message: MessageAuthEnum.LOGIN_FAILURE,
         };
       }
 
@@ -89,42 +120,62 @@ export class AuthController {
         code: AuthEnum.LOGIN_SUCCESS,
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         data: new LoginPayloadDto(userEntity.toDto(), token),
-        message: MessageAuthEnum.LOGIN_2000,
+        message: MessageAuthEnum.LOGIN_SUCCESS,
       };
     } catch (error) {
       this.loggerService.error('User login error by', error);
 
       return {
-        code: '5000',
+        code: ServerCode.ERROR,
         data: [],
-        message: 'Server error unknown',
+        message: MessageServerCode.ERROR,
       };
     }
   }
 
   @Post('register')
   @HttpCode(HttpStatus.OK)
-  @ApiOkResponse({ type: UserDto, description: 'Successfully Registered' })
+  @ApiOkResponse({ type: UserRegisterDto, description: 'Successfully Registered' })
   @ApiFile({ name: 'avatar' })
   async userRegister(
     @Body() userRegisterDto: UserRegisterDto,
     @UploadedFile() file: IFile,
-  ): Promise<ResponseDto<UserDto> | ResponseDto<string[]>> {
+  ): Promise<ResponseDto<{ userId: string }> | ResponseDto<string[]>> {
     try {
       const createdUser = await this.userService.createUser(userRegisterDto, file);
+      // send email
+      const otpCode = await this.otpService.create(createdUser);
+
+      // send email
+      if (otpCode.isChannel === OtpChannel.EMAIL) {
+        void this.mailerService.sendMailerService(
+          createdUser.email,
+          'Verify your email for app Quotes Service',
+          undefined,
+          `<h1>Hello ${createdUser.firstName} ${createdUser.lastName}.</h1>
+           <p>Follow this code to verify your email address.</p>
+           <p>OTP Code: <b>${otpCode.code}</b>  </p>
+           <p>If you didn’t ask to verify this address, you can ignore this email.</p>
+           Thanks, <br/>
+           Quotes Service Product Team
+           `,
+        );
+      }
 
       return {
-        code: '2000',
-        data: createdUser.toDto({ isActive: false }),
-        message: 'Register user successful',
+        code: AuthEnum.CREATE_USER_SUCCESS,
+        data: {
+          userId: createdUser.id,
+        },
+        message: MessageAuthEnum.CREATE_USER_SUCCESS,
       };
     } catch (error) {
       this.loggerService.error('User login error', error);
 
       return {
-        code: '5000',
+        code: ServerCode.ERROR,
         data: [],
-        message: 'Server error unknown',
+        message: MessageServerCode.ERROR,
       };
     }
   }
@@ -133,24 +184,24 @@ export class AuthController {
   @Get('me')
   @HttpCode(HttpStatus.OK)
   @Auth([RoleType.USER, RoleType.ADMIN])
-  @ApiOkResponse({ type: UserDto, description: 'current user info' })
+  @ApiOkResponse({ type: UserDto, description: 'Get current user info' })
   getCurrentUser(@AuthUser() user: UserEntity): ResponseDto<UserDto> | ResponseDto<string[]> {
     try {
       this.loggerService.info('AuthController execute func getCurrentUser');
       this.loggerService.debug('AuthController execute func getCurrentUser get data', user);
 
       return {
-        code: '2000',
-        data: user.toDto(),
-        message: 'Get info user successful!',
+        code: AuthEnum.GET_USER_SUCCESS,
+        data: user.toDto({ isActive: true }),
+        message: MessageAuthEnum.GET_USER_SUCCESS,
       };
     } catch (error) {
       this.loggerService.error('AuthController execute func getCurrentUser error', error);
 
       return {
-        code: '5000',
+        code: ServerCode.ERROR,
         data: [],
-        message: 'Server error unknown',
+        message: MessageServerCode.ERROR,
       };
     }
   }

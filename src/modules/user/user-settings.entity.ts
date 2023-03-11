@@ -13,6 +13,10 @@ export interface IUserSettingsEntity extends IAbstractEntity<UserDto> {
 
   isPhoneVerified?: boolean;
 
+  isStatus?: string;
+
+  isDelete?: number;
+
   user?: IUserEntity;
 }
 
@@ -27,6 +31,12 @@ export class UserSettingsEntity extends AbstractEntity<UserDto, UserDtoOptions> 
 
   @Column({ type: 'uuid' })
   userId?: string;
+
+  @Column({ type: 'character varying' })
+  isStatus?: string;
+
+  @Column({ type: 'numeric', default: 1 })
+  isDelete?: number;
 
   @OneToOne(() => UserEntity, (user) => user.settings, {
     onDelete: 'CASCADE',

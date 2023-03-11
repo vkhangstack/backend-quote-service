@@ -36,8 +36,8 @@ export class UserRegisterDto {
   readonly password: string;
 
   @ApiProperty()
-  @ValidateIf((o) => 'phoneNumber' in o)
+  @ValidateIf((o) => 'phone' in o)
   @IsPhoneNumber()
   @IsOptional()
-  readonly phoneNumber: string;
+  readonly phone: string;
 }
