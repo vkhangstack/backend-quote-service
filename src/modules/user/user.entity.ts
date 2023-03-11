@@ -50,7 +50,7 @@ export class UserEntity extends AbstractEntity<UserDto, UserDtoOptions> implemen
   role: RoleType;
 
   @Column({ unique: true, nullable: true })
-  email?: string;
+  email: string;
 
   @Column({ nullable: true })
   password?: string;

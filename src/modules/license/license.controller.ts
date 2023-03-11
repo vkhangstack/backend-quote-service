@@ -28,7 +28,7 @@ export class LicenseController {
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({
     type: CreateLicenseDto,
-    description: 'Create license',
+    description: 'Create license by user or admin',
   })
   @Auth([RoleType.USER, RoleType.ADMIN])
   async create(

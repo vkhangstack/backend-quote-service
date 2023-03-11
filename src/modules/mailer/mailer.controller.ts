@@ -10,7 +10,7 @@ export class MailerController {
 
   @Post('/check')
   async getHello(@Body() mailDto: CheckMailDto) {
-    const send = await this.mailerService.checkServiceMailer(
+    const send = await this.mailerService.sendMailerService(
       mailDto.toEmail,
       `Send message to ${mailDto.toEmail} to check system status`,
       `Hello ${mailDto.toEmail}`,

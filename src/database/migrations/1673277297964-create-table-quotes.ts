@@ -7,17 +7,19 @@ export class CreateTableQuotes1673277297964 implements MigrationInterface {
     await queryRunner.query(`
         CREATE TABLE "quotes"
         (
-          "id"         uuid              NOT NULL DEFAULT uuid_generate_v4(),
-          "created_at" TIMESTAMP         NOT NULL DEFAULT now(),
-          "updated_at" TIMESTAMP         NOT NULL,
+          "id"         uuid              NOT NULL DEFAULT uuid_generate_v4(),         
           "language"   character varying,
           "content"    character varying NOT NULL,
           "author"     character varying NOT NULL,
           "tags"       character varying,
           "author_slug"character varying,
           "length"     numeric,
-          CONSTRAINT "UQ_97672ac88f789772dd4797c8b2e" UNIQUE ("content"),
+          "created_at" TIMESTAMP         NOT NULL DEFAULT now(),
+          "updated_at" TIMESTAMP         NOT NULL,
+          "created_by" character varying,
+          "updated_by" character varying,
           CONSTRAINT "PK_a3ffb1c0c241659fc62907c7433" PRIMARY KEY ("id")
+          CONSTRAINT "UQ_97672ac88f789772dd4797c8b2e" UNIQUE ("content"),
         )`);
   }
 
