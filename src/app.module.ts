@@ -56,29 +56,29 @@ import { SharedModule } from './shared/shared.module';
         transports: [
           new transports.Console({
             level: 'debug',
-            format: format.combine(format.json({ space: 2 }), format.metadata()),
+            format: format.combine(format.json(), format.metadata()),
           }),
-          new transports.File({
-            dirname: path.join(__dirname, './../logs/debug/'),
-            filename: 'debug.log',
-            level: 'debug',
-            maxsize: 500_000,
-            maxFiles: 30,
-          }),
-          new transports.File({
-            dirname: path.join(__dirname, './../logs/error/'),
-            filename: 'error.log',
-            level: 'error',
-            maxsize: 500_000,
-            maxFiles: 30,
-          }),
-          new transports.File({
-            dirname: path.join(__dirname, './../logs/info/'),
-            filename: 'info.log',
-            maxsize: 500_000,
-            level: 'info',
-            maxFiles: 30,
-          }),
+          //   new transports.File({
+          //     dirname: path.join(__dirname, './../logs/debug/'),
+          //     filename: 'debug.log',
+          //     level: 'debug',
+          //     maxsize: 500_000,
+          //     maxFiles: 30,
+          //   }),
+          //   new transports.File({
+          //     dirname: path.join(__dirname, './../logs/error/'),
+          //     filename: 'error.log',
+          //     level: 'error',
+          //     maxsize: 500_000,
+          //     maxFiles: 30,
+          //   }),
+          //   new transports.File({
+          //     dirname: path.join(__dirname, './../logs/info/'),
+          //     filename: 'info.log',
+          //     maxsize: 500_000,
+          //     level: 'info',
+          //     maxFiles: 30,
+          //   }),
           new transports.MongoDB({
             level: 'debug',
             db: configService.mongoConfig.uri,
