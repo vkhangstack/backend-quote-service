@@ -93,7 +93,7 @@ export class AuthController {
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({
-    type: LoginPayloadDto,
+    type: UserLoginDto,
     description: 'Login account with username or email or phone and password',
   })
   @ApiException(() => [UserNotFoundException])
