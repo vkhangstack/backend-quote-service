@@ -23,6 +23,8 @@ export class CreateTableOtp1676730204272 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`ALTER TABLE "user_settings"
+      DROP CONSTRAINT "REL_19f4e08665a1f2bb2bb7d56f3"`);
     await queryRunner.query('DROP TABLE "otp_codes"');
   }
 }
