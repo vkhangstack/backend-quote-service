@@ -25,10 +25,18 @@ export class TypeLicenseService {
     return model;
   }
 
-  @Transactional()
-  async updateTypeLicense(updateLicenseDto: UpdateTypeLicenseDto, user: UserEntity): Promise<any> {
-    const id = await this.typeLicenseRepository.findOne({ where: { id: updateLicenseDto.id } });
+  async checkLicense(licenseId: string): Promise<TypeLicenseEntity | boolean> {
+    const record = await this.typeLicenseRepository.findOne({ where: { id: licenseId } });
 
+    if (!record) {
+      return false;
+    }
+
+    return record;
+  }
+
+  @Transactional()
+  async updateTypeLicense(id: any, updateLicenseDto: UpdateTypeLicenseDto, user: UserEntity): Promise<any> {
     return this.typeLicenseRepository.save({
       ...id,
       ...updateLicenseDto,

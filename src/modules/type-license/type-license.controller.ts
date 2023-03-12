@@ -72,7 +72,17 @@ export class LicenseController {
     try {
       this.loggerService.info('Type license controller execute func activeLicenseToken');
       this.loggerService.debug('LicenseController execute func activeLicenseToken get user', user);
-      const data = await this.typeLicenseService.updateTypeLicense(updateTypeLicense, user);
+      const id = await this.typeLicenseService.checkLicense(updateTypeLicense.id);
+
+      if (!id) {
+        return {
+          code: CODE.LICENSE_NOT_FOUND,
+          data: [],
+          message: MASSAGE.LICENSE_NOT_FOUND,
+        };
+      }
+
+      const data = await this.typeLicenseService.updateTypeLicense(id, updateTypeLicense, user);
 
       return {
         code: CODE.UPDATE_SUCCESS,
