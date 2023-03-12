@@ -82,11 +82,11 @@ export class LicenseController {
         };
       }
 
-      const data = await this.typeLicenseService.updateTypeLicense(id, updateTypeLicense, user);
+      await this.typeLicenseService.updateTypeLicense(id, updateTypeLicense, user);
 
       return {
         code: CODE.UPDATE_SUCCESS,
-        data,
+        data: [],
         message: MASSAGE.UPDATE_SUCCESS,
       };
     } catch (error) {

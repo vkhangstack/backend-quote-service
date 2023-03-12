@@ -46,8 +46,11 @@ export class TypeLicenseService {
   }
 
   async findAll(searchLicenseDto: SearchLicenseDto): Promise<{ typeLicenses: TypeLicenseEntity[]; total: number }> {
-    if (!searchLicenseDto.status) {
-      const data = await this.typeLicenseRepository.find();
+    if (searchLicenseDto.status) {
+      const data = await this.typeLicenseRepository.find({
+        where: { status: searchLicenseDto.status },
+        order: { createdAt: 'DESC' },
+      });
 
       return {
         typeLicenses: data,
@@ -55,7 +58,7 @@ export class TypeLicenseService {
       };
     }
 
-    const data = await this.typeLicenseRepository.find({ status: searchLicenseDto.status });
+    const data = await this.typeLicenseRepository.find({ order: { createdAt: 'DESC' } });
 
     return {
       typeLicenses: data,
