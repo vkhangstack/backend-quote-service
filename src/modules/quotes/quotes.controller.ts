@@ -22,7 +22,7 @@ import { CreateQuoteDto } from './dto/create-quote.dto';
 import { GetQuoteDto } from './dto/get-quote.dto';
 import { QuoteDto } from './dto/quote.dto';
 import { UpdateQuoteDto } from './dto/update-quote.dto';
-import { StatusLicense } from './quote.enum';
+import { CODE, MESSAGE, StatusLicense } from './quote.enum';
 import { QuotesService } from './quotes.service';
 
 @ApiTags('quotes')
@@ -51,9 +51,9 @@ export class QuotesController {
       const data = await this.quotesService.create(createQuoteDto);
 
       return {
-        code: HttpStatus.OK,
+        code: CODE.CREATE_QUOTES_SUCCESS,
         data,
-        message: 'Created quote successfully',
+        message: MESSAGE.CREATE_QUOTES_SUCCESS,
       };
     } catch (error) {
       this.loggerService.error(`Quotes controller func create error ${error}`);
@@ -116,9 +116,9 @@ export class QuotesController {
       const data = await this.quotesService.randomQuote();
 
       return {
-        code: HttpStatus.OK,
+        code: CODE.RANDOM_SUCCESS,
         data,
-        message: 'Random quote successfully',
+        message: MESSAGE.RANDOM_SUCCESS,
       };
     } catch (error) {
       this.loggerService.error(`Quotes controller func create error ${error}`);

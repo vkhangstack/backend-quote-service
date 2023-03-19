@@ -8,13 +8,17 @@ import { LicenseDto } from '../dto/license.dto';
 export interface ILicenseEntity extends IAbstractEntity<LicenseDto> {
   userId: string;
 
-  expires: number;
+  typeLicenseId: string;
 
   dayExpire: number;
 
-  typeLicense: number;
+  expires: number;
 
   status: number;
+
+  licenseKey: string;
+
+  licenseToken: string;
 
   createdBy: string;
 
@@ -34,7 +38,7 @@ export class LicenseEntity extends AbstractEntity<LicenseDto> implements ILicens
   dayExpire: number;
 
   @Column()
-  typeLicense: number;
+  typeLicenseId: string;
 
   @Column()
   status: number;

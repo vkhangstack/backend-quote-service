@@ -4,6 +4,10 @@ export enum STATUS {
 }
 
 export enum CODE {
-  SUCCESS = 'LICENSE_2000',
+  CREATE_SUCCESS = 'LICENSE_2001',
   FAIL = 'LICENSE_4000',
+}
+
+export enum MESSAGE {
+  CREATE_SUCCESS = 'Create license successfully',
 }

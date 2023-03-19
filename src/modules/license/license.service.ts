@@ -5,6 +5,7 @@ import { Transactional } from 'typeorm-transactional-cls-hooked';
 import { daysToTimestamp } from '../../common/utils';
 import { ApiConfigService } from '../../shared/services/api-config.service';
 import { GeneratorService } from '../../shared/services/generator.service';
+import { TypeLicenseRepository } from '../type-license/type-license.repository';
 import { IUserEntity, UserEntity } from '../user/user.entity';
 import { CreateLicenseDto } from './dto/create-license.dto';
 import type { SearchLicenseDto } from './dto/search-license.dto';
@@ -17,6 +18,7 @@ import { LicenseRepository } from './license.repository';
 export class LicenseService {
   constructor(
     private licenseRepository: LicenseRepository,
+    private typeLicenseRepository: TypeLicenseRepository,
     private readonly generateService: GeneratorService,
     private jwtService: JwtService,
     private readonly configService: ApiConfigService,
@@ -24,14 +26,17 @@ export class LicenseService {
 
   @Transactional()
   async create(createLicenseDto: CreateLicenseDto, user: IUserEntity): Promise<LicenseEntity> {
+    // const typeLicense = await this.typeLicenseRepository.find({ where: { id: createLicenseDto.typeLicenseId } });
+
     const licenseKey = this.generateService.randomHex();
 
     const model = this.licenseRepository.create({
-      ...createLicenseDto,
+      typeLicenseId: createLicenseDto.typeLicenseId,
+      dayExpire: createLicenseDto.dayExpire,
       status: STATUS.INACTIVE,
       userId: user.id,
       licenseKey,
-      createdBy: user.username,
+      createdBy: user.id,
     });
     await this.licenseRepository.save(model);
 

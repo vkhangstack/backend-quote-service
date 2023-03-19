@@ -12,6 +12,7 @@ import { LicenseDto } from './dto/license.dto';
 import { SearchLicenseDto } from './dto/search-license.dto';
 import { UpdateLicenseDto } from './dto/update-license.dto';
 import type { LicenseEntity } from './entities/license.entity';
+import { CODE, MESSAGE } from './license.enum';
 import { LicenseService } from './license.service';
 
 @Controller('license')
@@ -34,15 +35,15 @@ export class LicenseController {
   async create(
     @Body() createLicenseDto: CreateLicenseDto,
     @AuthUser() user: UserEntity,
-  ): Promise<ResponseDto<CreateLicenseDto> | ResponseDto<string[]>> {
+  ): Promise<ResponseDto<LicenseEntity> | ResponseDto<string[]>> {
     try {
       this.loggerService.info('License controller execute func create');
       const data = await this.licenseService.create(createLicenseDto, user);
 
       return {
-        code: '2000',
+        code: CODE.CREATE_SUCCESS,
         data,
-        message: 'Created license successful!',
+        message: MESSAGE.CREATE_SUCCESS,
       };
     } catch (error) {
       this.loggerService.error(`License controller func create error ${error}`);
