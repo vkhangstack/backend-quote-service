@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
+import type { IFile } from '../../interfaces/IFile';
 import type { CreateQuoteDto } from './dto/create-quote.dto';
 import type { UpdateQuoteDto } from './dto/update-quote.dto';
 import { QuoteRepository } from './quote.repository';
@@ -23,6 +24,21 @@ export class QuotesService {
     };
 
     return result;
+  }
+
+  createImport(file: IFile) {
+    // const model = this.quoteRepository.create({
+    //   ...createQuoteDto,
+    //   tags: createQuoteDto.tags.toString(),
+    //   length: createQuoteDto.content.length.toString(),
+    // });
+    // const data = await this.quoteRepository.save(model);
+    // const result = {
+    //   ...data,
+    //   tags: createQuoteDto.tags,
+    // };
+    // return result;
+    return file;
   }
 
   findAll() {

@@ -11,12 +11,15 @@ import {
   Patch,
   Post,
   Query,
+  UploadedFile,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Logger } from 'winston';
 
 import { RoleType } from '../../constants';
+import { ApiFile } from '../../decorators';
 import { Auth } from '../../decorators/http.decorators';
+import { IFile } from '../../interfaces/IFile';
 import { LicenseService } from '../license/license.service';
 import { CreateQuoteDto } from './dto/create-quote.dto';
 import { GetQuoteDto } from './dto/get-quote.dto';
@@ -57,6 +60,37 @@ export class QuotesController {
       };
     } catch (error) {
       this.loggerService.error(`Quotes controller func create error ${error}`);
+
+      return {
+        code: HttpStatus.INTERNAL_SERVER_ERROR,
+        data: [],
+        message: 'Server error unknown',
+      };
+    }
+  }
+
+  @Post('/file')
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({
+    type: QuoteDto,
+    description: 'Create quotes from import file',
+  })
+  @ApiFile({ name: 'file' })
+  @Auth([RoleType.ADMIN])
+  createImport(@UploadedFile() file: IFile) {
+    try {
+      this.loggerService.info('Quotes controller execute func createImport');
+      this.loggerService.debug('Quotes controller execute func createImport receive file', file);
+
+      const data = this.quotesService.createImport(file);
+
+      return {
+        code: CODE.CREATE_QUOTES_SUCCESS,
+        data,
+        message: MESSAGE.CREATE_QUOTES_SUCCESS,
+      };
+    } catch (error) {
+      this.loggerService.error(`Quotes controller func createImport error ${error}`);
 
       return {
         code: HttpStatus.INTERNAL_SERVER_ERROR,
