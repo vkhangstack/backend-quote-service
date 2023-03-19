@@ -19,7 +19,7 @@ export class CreateTableQuotes1673277297964 implements MigrationInterface {
           "created_by" character varying,
           "updated_by" character varying,
           CONSTRAINT "PK_a3ffb1c0c241659fc62907c7433" PRIMARY KEY ("id"),
-          CONSTRAINT "UQ_97672ac88f789772dd4797c8b2e" UNIQUE ("content"),
+          CONSTRAINT "UQ_97672ac88f789772dd4797c8b2e" UNIQUE ("content")
         )`);
   }
 
