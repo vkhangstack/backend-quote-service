@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import type { IFile } from '../../interfaces/IFile';
+import type { UserEntity } from '../user/user.entity';
 import type { CreateQuoteDto } from './dto/create-quote.dto';
 import type { UpdateQuoteDto } from './dto/update-quote.dto';
 import { QuoteRepository } from './quote.repository';
@@ -9,11 +10,12 @@ import { QuoteRepository } from './quote.repository';
 export class QuotesService {
   constructor(private quoteRepository: QuoteRepository) {}
 
-  async create(createQuoteDto: CreateQuoteDto): Promise<any> {
+  async create(user: UserEntity, createQuoteDto: CreateQuoteDto): Promise<any> {
     const model = this.quoteRepository.create({
       ...createQuoteDto,
       tags: createQuoteDto.tags.toString(),
       length: createQuoteDto.content.length.toString(),
+      createdBy: user.id,
     });
 
     const data = await this.quoteRepository.save(model);

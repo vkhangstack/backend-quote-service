@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, ValidateIf } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, ValidateIf } from 'class-validator';
 
 export class CreateQuoteDto {
   @ApiPropertyOptional()
@@ -11,6 +11,11 @@ export class CreateQuoteDto {
   @IsNotEmpty()
   @IsString()
   author: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  language: string;
 
   @ApiPropertyOptional()
   @ValidateIf((o) => 'tags' in o)

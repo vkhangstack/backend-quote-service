@@ -29,4 +29,10 @@ export class QuoteEntity extends AbstractEntity<QuoteDto> implements IQuoteEntit
 
   @Column({ nullable: true })
   length?: string;
+
+  @Column({ nullable: true })
+  createdBy?: string;
+
+  @Column({ nullable: true })
+  updatedBy?: string;
 }

@@ -17,10 +17,11 @@ import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Logger } from 'winston';
 
 import { RoleType } from '../../constants';
-import { ApiFile } from '../../decorators';
+import { ApiFile, AuthUser } from '../../decorators';
 import { Auth } from '../../decorators/http.decorators';
 import { IFile } from '../../interfaces/IFile';
 import { LicenseService } from '../license/license.service';
+import { UserEntity } from '../user/user.entity';
 import { CreateQuoteDto } from './dto/create-quote.dto';
 import { GetQuoteDto } from './dto/get-quote.dto';
 import { QuoteDto } from './dto/quote.dto';
@@ -36,7 +37,7 @@ export class QuotesController {
     private readonly licenseService: LicenseService,
 
     @Inject('winston')
-    private loggerService: Logger,
+    private readonly loggerService: Logger,
   ) {}
 
   @Post()
@@ -46,12 +47,12 @@ export class QuotesController {
     description: 'Create quotes',
   })
   @Auth([RoleType.ADMIN])
-  async create(@Body() createQuoteDto: CreateQuoteDto): Promise<any> {
+  async create(@AuthUser() user: UserEntity, @Body() createQuoteDto: CreateQuoteDto): Promise<any> {
     try {
       this.loggerService.info('Quotes controller execute func create');
       this.loggerService.debug('Quotes controller execute func create receive body', createQuoteDto);
 
-      const data = await this.quotesService.create(createQuoteDto);
+      const data = await this.quotesService.create(user, createQuoteDto);
 
       return {
         code: CODE.CREATE_QUOTES_SUCCESS,
