@@ -1,5 +1,5 @@
 import { Body, Controller, HttpCode, HttpStatus, Inject, Post } from '@nestjs/common';
-import { ApiOkResponse } from '@nestjs/swagger';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Logger } from 'winston';
 
 import type { ResponseDto } from '../../common/dto/response.dto';
@@ -9,6 +9,7 @@ import { OtpCode } from './otp.enum';
 import { OtpService } from './otp.service';
 
 @Controller('otp')
+@ApiTags('otp')
 export class OtpController {
   constructor(
     private otpService: OtpService,

@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateLicenseDto {
   @ApiPropertyOptional()
@@ -9,6 +9,6 @@ export class CreateLicenseDto {
 
   @ApiPropertyOptional()
   @IsNotEmpty()
-  @IsNumber()
-  typeLicense: number;
+  @IsString()
+  typeLicenseId: string;
 }

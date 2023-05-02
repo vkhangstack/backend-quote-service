@@ -1,10 +1,12 @@
 import { Body, Controller, Post } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 
 import { CheckMailDto } from './dto/mailer.dto';
 import { CODE } from './enum';
 import { MailerService } from './mailer.service';
 
 @Controller('mailer')
+@ApiTags('mailer')
 export class MailerController {
   constructor(private mailerService: MailerService) {}
 

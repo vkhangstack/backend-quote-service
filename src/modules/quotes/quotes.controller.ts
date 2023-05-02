@@ -11,18 +11,21 @@ import {
   Patch,
   Post,
   Query,
+  UploadedFile,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Logger } from 'winston';
 
 import { RoleType } from '../../constants';
+import { ApiFile } from '../../decorators';
 import { Auth } from '../../decorators/http.decorators';
+import { IFile } from '../../interfaces/IFile';
 import { LicenseService } from '../license/license.service';
 import { CreateQuoteDto } from './dto/create-quote.dto';
 import { GetQuoteDto } from './dto/get-quote.dto';
 import { QuoteDto } from './dto/quote.dto';
 import { UpdateQuoteDto } from './dto/update-quote.dto';
-import { StatusLicense } from './quote.enum';
+import { CODE, MESSAGE, StatusLicense } from './quote.enum';
 import { QuotesService } from './quotes.service';
 
 @ApiTags('quotes')
@@ -51,12 +54,43 @@ export class QuotesController {
       const data = await this.quotesService.create(createQuoteDto);
 
       return {
-        code: HttpStatus.OK,
+        code: CODE.CREATE_QUOTES_SUCCESS,
         data,
-        message: 'Created quote successfully',
+        message: MESSAGE.CREATE_QUOTES_SUCCESS,
       };
     } catch (error) {
       this.loggerService.error(`Quotes controller func create error ${error}`);
+
+      return {
+        code: HttpStatus.INTERNAL_SERVER_ERROR,
+        data: [],
+        message: 'Server error unknown',
+      };
+    }
+  }
+
+  @Post('/file')
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({
+    type: QuoteDto,
+    description: 'Create quotes from import file',
+  })
+  @ApiFile({ name: 'file' })
+  @Auth([RoleType.ADMIN])
+  createImport(@UploadedFile() file: IFile) {
+    try {
+      this.loggerService.info('Quotes controller execute func createImport');
+      this.loggerService.debug('Quotes controller execute func createImport receive file', file);
+
+      const data = this.quotesService.createImport(file);
+
+      return {
+        code: CODE.CREATE_QUOTES_SUCCESS,
+        data,
+        message: MESSAGE.CREATE_QUOTES_SUCCESS,
+      };
+    } catch (error) {
+      this.loggerService.error(`Quotes controller func createImport error ${error}`);
 
       return {
         code: HttpStatus.INTERNAL_SERVER_ERROR,
@@ -116,9 +150,9 @@ export class QuotesController {
       const data = await this.quotesService.randomQuote();
 
       return {
-        code: HttpStatus.OK,
+        code: CODE.RANDOM_SUCCESS,
         data,
-        message: 'Random quote successfully',
+        message: MESSAGE.RANDOM_SUCCESS,
       };
     } catch (error) {
       this.loggerService.error(`Quotes controller func create error ${error}`);

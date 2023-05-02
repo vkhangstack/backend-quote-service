@@ -10,23 +10,25 @@ export class CreateTableTypeLicense1678544574060 implements MigrationInterface {
           "id"         uuid  NOT NULL DEFAULT uuid_generate_v4(),          
           "type_license"    character varying NOT NULL,
           "name"       character varying NOT NULL,
-          "price"    numeric,
-          "price_month"    numeric,
-          "price_year"    numeric ,
-          "price_discount"    numeric ,
-          "price_discount_month"    numeric ,
-          "price_discount_year"    numeric ,
-          "discount"    numeric,
-          "discount_month"    numeric,
-          "discount_year"    numeric,
-          "limit_month"    numeric,
-          "limit_day"    numeric,
+          "price"    integer,
+          "price_month"    integer,
+          "price_year"    integer ,
+          "price_discount"    integer ,
+          "price_discount_month"    integer ,
+          "price_discount_year"    integer ,
+          "discount"    integer,
+          "discount_month"    integer,
+          "discount_year"    integer,
+          "limit_month"    integer,
+          "limit_day"    integer,
+          "status" integer,
           "created_at" TIMESTAMP NOT NULL DEFAULT now(),
           "updated_at" TIMESTAMP,
           "created_by" character varying,
           "updated_by" character varying,
-          CONSTRAINT "PK_a3f2b1c2c241659fc62217c74" PRIMARY KEY ("id"),
-        )`);
+          CONSTRAINT "PK_a3f2b1c2c241659fc62217c74" PRIMARY KEY ("id")
+          )
+        `);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

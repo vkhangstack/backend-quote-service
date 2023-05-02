@@ -45,7 +45,7 @@ export class OtpService {
 
   @Transactional()
   async checkOtp(otpDto: VerifyOtpDto): Promise<boolean> {
-    const otp = await this.optRepository.findOne({ where: { id: otpDto.otpId } });
+    const otp = await this.optRepository.findOne({ where: { userId: otpDto.userId } });
 
     // check expire code
     switch (true) {

@@ -16,6 +16,7 @@ import { MailerModule } from './modules/mailer/mailer.module';
 import { OtpModule } from './modules/otp/otp.module';
 // import { PostModule } from './modules/post/post.module';
 import { QuotesModule } from './modules/quotes/quotes.module';
+import { TypeLicenseModule } from './modules/type-license/type-license.module';
 import { UserModule } from './modules/user/user.module';
 import { ApiConfigService } from './shared/services/api-config.service';
 import { SharedModule } from './shared/shared.module';
@@ -25,6 +26,7 @@ import { SharedModule } from './shared/shared.module';
     AuthModule,
     UserModule,
     MailerModule,
+    TypeLicenseModule,
     LicenseModule,
     QuotesModule,
     OtpModule,
