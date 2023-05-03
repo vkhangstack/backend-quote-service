@@ -139,6 +139,7 @@ export class ApiConfigService {
   get appConfig() {
     return {
       port: this.getString('PORT'),
+      host: this.getString('HOST'),
       appKey: this.getString('ROOT_KEY'),
     };
   }

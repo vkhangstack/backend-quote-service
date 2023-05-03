@@ -10,11 +10,11 @@ import { QuoteRepository } from './quote.repository';
 export class QuotesService {
   constructor(private quoteRepository: QuoteRepository) {}
 
-  async create(user: UserEntity, createQuoteDto: CreateQuoteDto): Promise<any> {
+  async create(user: UserEntity, createQuoteDto: CreateQuoteDto): Promise<object> {
     const model = this.quoteRepository.create({
       ...createQuoteDto,
       tags: createQuoteDto.tags.toString(),
-      length: createQuoteDto.content.length.toString(),
+      length: createQuoteDto.content.length,
       createdBy: user.id,
     });
 

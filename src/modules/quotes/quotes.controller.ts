@@ -47,7 +47,7 @@ export class QuotesController {
     description: 'Create quotes',
   })
   @Auth([RoleType.ADMIN])
-  async create(@AuthUser() user: UserEntity, @Body() createQuoteDto: CreateQuoteDto): Promise<any> {
+  async create(@AuthUser() user: UserEntity, @Body() createQuoteDto: CreateQuoteDto): Promise<object> {
     try {
       this.loggerService.info('Quotes controller execute func create');
       this.loggerService.debug('Quotes controller execute func create receive body', createQuoteDto);
@@ -121,9 +121,7 @@ export class QuotesController {
   async randomQuote(@Query('licenseKey') licenseKey: string, @Body() getQuoteDto: GetQuoteDto): Promise<any> {
     try {
       this.loggerService.info('Quotes controller execute func randomQuote');
-      this.loggerService.debug('QuoteController execute func randomQuote get license key from query', {
-        licenseKey,
-      });
+      this.loggerService.debug('QuoteController execute func randomQuote get license key from query', licenseKey);
       this.loggerService.debug('QuotesController execute func randomQuote get license key from body', getQuoteDto);
       licenseKey = licenseKey ? licenseKey : getQuoteDto.licenseKey;
       const license = await this.licenseService.checkLicenseKey(licenseKey);

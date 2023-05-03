@@ -88,8 +88,9 @@ export async function bootstrap(): Promise<NestExpressApplication> {
 
   configService.setAppKey();
   const port = configService.appConfig.port;
+  const host = configService.appConfig.host;
   const key = configService.appConfig.appKey;
-  await app.listen(port);
+  await app.listen(port, host);
 
   Logger.log(`server running on ${await app.getUrl()}`);
   Logger.verbose(`App run generate root key "${key}"`);

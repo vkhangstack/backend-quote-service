@@ -12,7 +12,7 @@ export interface IQuoteEntity extends IAbstractEntity<QuoteDto> {
 
   tags?: string;
 
-  length?: string;
+  length?: number;
 }
 
 @Entity({ name: 'quotes' })
@@ -28,7 +28,7 @@ export class QuoteEntity extends AbstractEntity<QuoteDto> implements IQuoteEntit
   tags?: string;
 
   @Column({ nullable: true })
-  length?: string;
+  length?: number;
 
   @Column({ nullable: true })
   createdBy?: string;
