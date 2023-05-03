@@ -93,7 +93,7 @@ import { SharedModule } from './shared/shared.module';
             capped: true,
             cappedSize: 500_000,
             storeHost: true,
-            dbName: 'quotes-logs',
+            // dbName: 'quotes-logs',
             expireAfterSeconds: 7_889_400,
             label: 'quotes-service',
             cappedMax: 50,
